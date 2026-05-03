@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>האם זה עובד?</title>
+
+<!-- Paamon fonts (base64 embedded) -->
+<link rel="stylesheet" href="/paamon-fonts.css" />
+
+<style>
+:root {
+  --highlight: #78DDB5;
+  --mint-light: #A6E5CC;
+  --navy: #0A1C2F;
+  --white: #FFFFFF;
+  --coral: #E06768;
+  --mustard: #EBC13A;
+  --gray: #F4F4F4;
+
+  --sp-s: 16px;
+  --sp-m: 32px;
+  --sp-l: 56px;
+  --sp-xl: 80px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  font-family: 'Paamon', 'Heebo', 'Assistant', Arial, sans-serif;
+  background: #000;
+  overflow: hidden;
+}
+
+.deck {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  display: none;
+}
+
+.slide.is-active { display: block; }
+
+.slide-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  z-index: 0;
+}
+
+.layout-a .slide-bg { background-image: url('/bgfullblue.jpg'); }
+.layout-b .slide-bg,
+.layout-c .slide-bg,
+.layout-d .slide-bg,
+.layout-e .slide-bg,
+.layout-f .slide-bg { background-image: url('/bgframeblue.jpg'); }
+
+.content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: clamp(60px, 8vw, 100px) clamp(40px, 6vw, 80px);
+}
+
+.layout-b .content,
+.layout-c .content,
+.layout-d .content,
+.layout-e .content,
+.layout-f .content {
+  padding-top: clamp(110px, 14vh, 150px);
+  padding-bottom: clamp(110px, 14vh, 150px);
+}
+
+.layout-a h1 {
+  font-size: clamp(40px, 6.5vw, 76px);
+  font-weight: 900;
+  color: var(--white);
+  line-height: 1.05;
+  letter-spacing: -0.5px;
+  margin-bottom: var(--sp-m);
+}
+
+.layout-a h2 {
+  font-size: clamp(20px, 2.8vw, 32px);
+  font-weight: 400;
+  color: var(--white);
+  line-height: 1.4;
+  max-width: 800px;
+  margin: 0 auto var(--sp-l);
+  opacity: 0.95;
+}
+
+.divider {
+  width: 80px;
+  height: 3px;
+  background: var(--highlight);
+  margin: var(--sp-m) auto;
+  border-radius: 2px;
+}
+
+.divider-wide { width: 120px; }
+
+.speaker-name {
+  font-size: clamp(24px, 3vw, 36px);
+  font-weight: 700;
+  color: var(--white);
+  margin-top: var(--sp-l);
+  margin-bottom: var(--sp-s);
+}
+
+.speaker-title {
+  font-size: clamp(14px, 1.5vw, 18px);
+  font-weight: 400;
+  color: var(--white);
+  line-height: 1.6;
+  opacity: 0.9;
+}
+
+.speaker-title span { display: block; }
+
+.closing-headline {
+  font-size: clamp(24px, 3.2vw, 40px);
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: var(--sp-m);
+}
+
+.closing-phone {
+  font-size: clamp(40px, 6.5vw, 68px);
+  font-weight: 900;
+  color: var(--highlight);
+  letter-spacing: 1px;
+  margin-bottom: var(--sp-m);
+  direction: ltr;
+}
+
+.closing-website {
+  font-size: clamp(16px, 2vw, 24px);
+  font-weight: 500;
+  color: var(--white);
+  letter-spacing: 0.5px;
+}
+
+.slide-title {
+  font-size: clamp(26px, 3.6vw, 40px);
+  font-weight: 700;
+  color: var(--navy);
+  line-height: 1.15;
+  margin-bottom: var(--sp-s);
+}
+
+.layout-b .divider,
+.layout-c .divider,
+.layout-d .divider,
+.layout-e .divider,
+.layout-f .divider {
+  margin: var(--sp-s) auto var(--sp-m);
+}
+
+.card-list {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(14px, 2vh, 22px);
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.card {
+  background: var(--white);
+  border: 2.5px solid var(--highlight);
+  border-radius: 14px;
+  padding: clamp(14px, 2vh, 22px) var(--sp-m);
+  box-shadow: 0 2px 8px rgba(10, 28, 47, 0.04);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(10, 28, 47, 0.08);
+}
+
+.card-text {
+  font-size: clamp(20px, 2.4vw, 26px);
+  font-weight: 500;
+  color: var(--navy);
+  line-height: 1.4;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--sp-m);
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.grid-3x2 { grid-template-columns: repeat(3, 1fr); }
+
+.grid-cell {
+  background: var(--white);
+  border: 2.5px solid var(--highlight);
+  border-radius: 12px;
+  padding: clamp(18px, 2.4vw, 28px) var(--sp-s);
+  font-size: clamp(18px, 2.2vw, 24px);
+  font-weight: 700;
+  color: var(--navy);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 70px;
+  text-align: center;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  box-shadow: 0 2px 6px rgba(10, 28, 47, 0.04);
+}
+
+.grid-cell:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(10, 28, 47, 0.1);
+}
+
+.nav {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(10, 28, 47, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 8px 12px;
+  border-radius: 999px;
+  z-index: 100;
+  font-family: 'Paamon', 'Heebo', Arial, sans-serif;
+}
+
+.nav button {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: white;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+}
+
+.nav button:hover { background: rgba(255, 255, 255, 0.25); }
+.nav button:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.nav .counter {
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  min-width: 50px;
+  text-align: center;
+}
+
+.nav .fs-btn { width: 36px; height: 36px; font-size: 16px; }
+
+@media (max-width: 768px) {
+  .grid { grid-template-columns: repeat(2, 1fr); gap: var(--sp-s); }
+  .card-list { gap: var(--sp-s); }
+  .content { padding: clamp(50px, 12vw, 80px) clamp(20px, 5vw, 40px); }
+}
+
+@media (max-height: 700px) {
+  .speaker-name { margin-top: var(--sp-m); }
+  .layout-a h2 { margin-bottom: var(--sp-m); }
+  .card-list { gap: 18px; }
+  .grid { gap: 18px; }
+}
+
+@media (max-height: 600px) {
+  .layout-a h1 { font-size: clamp(34px, 5.5vw, 56px); }
+  .speaker-name { margin-top: var(--sp-s); font-size: clamp(20px, 2.5vw, 28px); }
+  .card { padding: 14px 24px; }
+  .grid-cell { min-height: 56px; padding: 12px; }
+}
+
+@media (max-width: 380px) {
+  .layout-a h1 { font-size: 32px; }
+  .closing-phone { font-size: 36px; }
+  .grid-cell { font-size: 16px; }
+  .card-text { font-size: 18px; }
+}
+
+.deck { -webkit-overflow-scrolling: touch; }
+</style>
+</head>
+<body>
+
+<div class="deck" id="deck">
+
+  <section class="slide layout-a" data-index="0">
+    <div class="slide-bg"></div>
+    <div class="content">
+      <h1>האם זה עובד?</h1>
+      <h2>הזורעים בדמעה, ברינה יקצורו</h2>
+      <div class="divider divider-wide"></div>
+      <div class="speaker-name">חזקי גלבוע</div>
+      <div class="speaker-title">
+        <span>עו"ס קליני (MSW), מומחה לגילאי</span>
+        <span>ההתבגרות והתנהגויות סיכון,</span>
+        <span>מייסד ומנהל מרכז 'נשרים'.</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide layout-e" data-index="1">
+    <div class="slide-bg"></div>
+    <div class="content">
+      <h2 class="slide-title">זה לקח הרבה זמן</h2>
+      <div class="divider"></div>
+      <div class="grid grid-3x2">
+        <div class="grid-cell">עריכות</div>
+        <div class="grid-cell">שינויים</div>
+        <div class="grid-cell">מחיקות</div>
+        <div class="grid-cell">בדיקות</div>
+        <div class="grid-cell">שעות</div>
+        <div class="grid-cell">לילות</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide layout-c" data-index="2">
+    <div class="slide-bg"></div>
+    <div class="content">
+      <h2 class="slide-title">זה התחיל מרעיון מגניב</h2>
+      <div class="divider"></div>
+      <div class="card-list">
+        <div class="card"><p class="card-text">לחסוך זמן</p></div>
+        <div class="card"><p class="card-text">לייעל תהליכים</p></div>
+        <div class="card"><p class="card-text">לחזות בפלאי הטכנולוגיה</p></div>
+        <div class="card"><p class="card-text">להתייעל</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide layout-a" data-index="3">
+    <div class="slide-bg"></div>
+    <div class="content">
+      <p class="closing-headline">לייעוץ ומענה:</p>
+      <p class="closing-phone">053-766-1500</p>
+      <p class="closing-website">nesharim.org.il</p>
+    </div>
+  </section>
+
+</div>
+
+<div class="nav" role="navigation" aria-label="ניווט מצגת">
+  <button id="prev" aria-label="שקף קודם" title="שקף קודם">‹</button>
+  <span class="counter" id="counter">1 / 4</span>
+  <button id="next" aria-label="שקף הבא" title="שקף הבא">›</button>
+  <button class="fs-btn" id="fs" aria-label="מסך מלא" title="מסך מלא">⛶</button>
+</div>
+
+<script>
+(function () {
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const prevBtn = document.getElementById('prev');
+  const nextBtn = document.getElementById('next');
+  const fsBtn   = document.getElementById('fs');
+  const counter = document.getElementById('counter');
+
+  let current = 0;
+
+  function update() {
+    slides.forEach((s, i) => {
+      const active = i === current;
+      s.classList.toggle('is-active', active);
+      if (active) animateIn(s);
+    });
+    counter.textContent = (current + 1) + ' / ' + slides.length;
+    prevBtn.disabled = current === 0;
+    nextBtn.disabled = current === slides.length - 1;
+  }
+
+  function animateIn(slide) {
+    const elements = slide.querySelectorAll('.content > *');
+    elements.forEach((el, i) => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(20px)';
+    });
+    slide.offsetHeight;
+    elements.forEach((el, i) => {
+      el.style.transition = 'opacity 0.55s ease ' + (i * 0.08) + 's, transform 0.55s ease ' + (i * 0.08) + 's';
+      el.style.opacity = '1';
+      el.style.transform = 'translateY(0)';
+    });
+  }
+
+  function next() { if (current < slides.length - 1) { current++; update(); } }
+  function prev() { if (current > 0) { current--; update(); } }
+
+  prevBtn.addEventListener('click', prev);
+  nextBtn.addEventListener('click', next);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowDown' || e.key === ' ' || e.key === 'PageDown') {
+      e.preventDefault();
+      next();
+    } else if (e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'PageUp') {
+      e.preventDefault();
+      prev();
+    } else if (e.key === 'Home') { current = 0; update(); }
+    else if (e.key === 'End') { current = slides.length - 1; update(); }
+    else if (e.key === 'f' || e.key === 'F') { toggleFullscreen(); }
+  });
+
+  let tStartX = 0, tStartY = 0;
+  document.addEventListener('touchstart', (e) => {
+    if (!e.touches[0]) return;
+    tStartX = e.touches[0].clientX;
+    tStartY = e.touches[0].clientY;
+  }, { passive: true });
+
+  document.addEventListener('touchend', (e) => {
+    if (!e.changedTouches[0]) return;
+    const dx = e.changedTouches[0].clientX - tStartX;
+    const dy = e.changedTouches[0].clientY - tStartY;
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) {
+      if (dx < 0) next(); else prev();
+    }
+  }, { passive: true });
+
+  function toggleFullscreen() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen?.();
+    } else {
+      document.exitFullscreen?.();
+    }
+  }
+  fsBtn.addEventListener('click', toggleFullscreen);
+
+  function init() {
+    slides.forEach(s => { s.style.opacity = '0'; });
+    requestAnimationFrame(() => {
+      slides.forEach(s => {
+        s.offsetHeight;
+        s.style.transition = 'opacity 0.4s ease';
+        s.style.opacity = '1';
+      });
+      update();
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+
+</body>
+</html>
