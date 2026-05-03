@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>קשר שמייצר שינוי — נשרים</title>
+<link rel="stylesheet" href="/paamon-fonts.css" />
+<style>
+:root {
+  --navy: #0A1C2F; --white: #FFFFFF; --mint: #78DDB5; --mint-light: #A6E5CC;
+  --mint-soft: rgba(120, 221, 181, 0.08); --coral: #E06768;
+  --coral-soft: rgba(224, 103, 104, 0.08); --mustard: #EBC13A; --gray: #F4F4F4;
+  --highlight: var(--mint);
+  --sp-s: 16px; --sp-m: 32px; --sp-l: 56px; --sp-xl: 80px;
+  --font: 'Paamon', 'Heebo', 'Assistant', Arial, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; height: 100%; background: var(--navy); font-family: var(--font); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; overflow: hidden; }
+.deck { position: relative; width: 100vw; height: 100vh; height: 100dvh; overflow: hidden; }
+.slide { position: absolute; inset: 0; width: 100%; height: 100%; display: none; overflow: hidden; }
+.slide.active { display: block; }
+.slide-bg { position: absolute; inset: 0; background-size: cover; background-position: center; background-repeat: no-repeat; z-index: 0; }
+.layout-a .slide-bg { background-image: url('/bgfullblue.jpg'); }
+.layout-b .slide-bg, .layout-c .slide-bg, .layout-d .slide-bg, .layout-e .slide-bg, .layout-f .slide-bg { background-image: url('/bgframeblue.jpg'); }
+.content { position: absolute; inset: 0; z-index: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; direction: rtl; }
+.layout-a .content { padding: clamp(60px, 8vh, 110px) clamp(40px, 6vw, 90px) clamp(80px, 12vh, 130px); color: var(--white); }
+.layout-b .content, .layout-c .content, .layout-d .content, .layout-e .content, .layout-f .content { padding: clamp(60px, 13vh, 130px) clamp(40px, 6vw, 90px) clamp(80px, 14vh, 140px); color: var(--navy); }
+h1.deck-h1 { font-family: var(--font); font-weight: 900; font-size: clamp(36px, 6vw, 72px); line-height: 1.1; margin: 0; letter-spacing: -0.01em; }
+h2.deck-h2 { font-family: var(--font); font-weight: 400; font-size: clamp(20px, 2.6vw, 32px); line-height: 1.4; margin: 0; max-width: 900px; }
+.slide-title { font-family: var(--font); font-weight: 700; font-size: clamp(28px, 3.8vw, 44px); line-height: 1.15; color: var(--navy); margin: 0 0 var(--sp-s); text-align: center; }
+.divider { height: 3px; background: var(--highlight); border-radius: 2px; margin: var(--sp-m) auto; }
+.divider-wide { width: 120px; }
+.divider-mid { width: 80px; }
+.divider-short { width: 60px; height: 2.5px; }
+.opening-stack { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--sp-m); max-width: 1100px; margin: 0 auto; }
+.opening-stack h1.deck-h1 { color: var(--white); }
+.opening-stack h2.deck-h2 { color: var(--white); opacity: 0.92; }
+.opening-stack .divider { background: var(--highlight); }
+.speaker-block { margin-top: clamp(24px, 4vh, 40px); color: var(--white); line-height: 1.4; }
+.speaker-name { font-weight: 700; font-size: clamp(22px, 2.6vw, 32px); margin-bottom: 6px; }
+.speaker-title { font-weight: 400; font-size: clamp(13px, 1.3vw, 17px); opacity: 0.85; }
+.speaker-title div { line-height: 1.5; }
+.closing-stack { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--sp-m); }
+.closing-headline { font-weight: 700; color: var(--white); font-size: clamp(24px, 3.2vw, 40px); margin: 0; }
+.closing-phone { font-weight: 900; color: var(--highlight); font-size: clamp(38px, 6vw, 68px); margin: 0; letter-spacing: 0.02em; }
+.closing-website { font-weight: 500; color: var(--white); font-size: clamp(16px, 2vw, 24px); margin: 0; opacity: 0.9; letter-spacing: 0.04em; }
+.transition-stack { display: flex; flex-direction: column; align-items: center; justify-content: center; max-width: 1000px; margin: 0 auto; gap: var(--sp-m); }
+.transition-stack h1.deck-h1 { color: var(--white); }
+.transition-descriptor { color: var(--white); font-weight: 400; font-size: clamp(20px, 2.6vw, 32px); line-height: 1.4; max-width: 900px; margin: 0; opacity: 0.92; }
+.layout-b .content { justify-content: center; }
+.single-idea { max-width: 1100px; display: flex; flex-direction: column; align-items: center; gap: var(--sp-m); }
+.big-statement { font-weight: 700; font-size: clamp(26px, 4vw, 50px); line-height: 1.3; color: var(--navy); margin: 0; max-width: 1100px; }
+.big-statement .accent { color: var(--coral); }
+.big-statement .mint { color: var(--mint); }
+.subtext { font-weight: 400; font-size: clamp(18px, 2.2vw, 26px); line-height: 1.5; color: var(--navy); opacity: 0.78; margin: 0; max-width: 800px; }
+.layout-c .content { justify-content: flex-start; }
+.layout-c .slide-title { font-size: clamp(24px, 3.2vw, 36px); }
+.layout-c .divider { margin: clamp(8px, 1.4vh, 14px) auto clamp(12px, 2vh, 20px); }
+.card-list { display: flex; flex-direction: column; gap: clamp(8px, 1.4vh, 14px); width: 100%; max-width: 950px; margin: 0 auto; }
+.card { background: var(--white); border: 2px solid var(--highlight); border-radius: 14px; padding: clamp(10px, 2vh, 18px) clamp(20px, 3vw, 36px); box-shadow: 0 6px 20px rgba(10, 28, 47, 0.06); text-align: center; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.card-text { font-weight: 500; font-size: clamp(15px, 1.9vw, 22px); line-height: 1.5; color: var(--navy); margin: 0; }
+.card-subtext { font-weight: 400; font-size: clamp(13px, 1.4vw, 17px); color: var(--navy); opacity: 0.7; margin-top: 4px; }
+.card-numbered { display: flex; align-items: center; gap: clamp(14px, 2vw, 22px); text-align: right; padding: clamp(12px, 2vh, 20px) clamp(20px, 3vw, 32px); }
+.card-num { flex: 0 0 auto; width: clamp(34px, 4vw, 44px); height: clamp(34px, 4vw, 44px); border-radius: 50%; background: var(--mint); color: var(--navy); font-weight: 900; font-size: clamp(15px, 1.9vw, 22px); display: flex; align-items: center; justify-content: center; }
+.card-numbered .card-text { text-align: right; flex: 1; font-size: clamp(14px, 1.7vw, 20px); }
+.card-list.dense { gap: clamp(5px, 0.8vh, 9px); }
+.card-list.dense .card { padding: clamp(6px, 1.1vh, 10px) clamp(16px, 2.4vw, 26px); }
+.card-list.dense .card-num { width: clamp(24px, 3vw, 32px); height: clamp(24px, 3vw, 32px); font-size: clamp(12px, 1.4vw, 16px); }
+.card-list.dense .card-text { font-size: clamp(12px, 1.4vw, 17px); line-height: 1.4; }
+.card-list.dense .card-numbered { gap: clamp(10px, 1.5vw, 16px); }
+.card-list.xdense { gap: clamp(4px, 0.7vh, 7px); max-width: 880px; }
+.card-list.xdense .card { padding: clamp(5px, 0.9vh, 8px) clamp(14px, 2.2vw, 24px); border-width: 1.5px; }
+.card-list.xdense .card-num { width: clamp(22px, 2.6vw, 28px); height: clamp(22px, 2.6vw, 28px); font-size: clamp(11px, 1.3vw, 14px); }
+.card-list.xdense .card-text { font-size: clamp(11px, 1.3vw, 16px); line-height: 1.35; }
+.card-list.xdense .card-numbered { gap: clamp(8px, 1.2vw, 14px); }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-m); width: 100%; max-width: 1100px; margin: 0 auto; direction: rtl; }
+.two-col .col { border-radius: 14px; padding: clamp(20px, 3vh, 36px) clamp(20px, 2.6vw, 32px); text-align: center; display: flex; flex-direction: column; gap: 14px; }
+.col-coral { background: var(--coral-soft); border: 2px solid var(--coral); }
+.col-mint { background: var(--mint-soft); border: 2px solid var(--mint); }
+.col-header { font-weight: 700; font-size: clamp(20px, 2.4vw, 30px); margin: 0 0 6px; }
+.col-coral .col-header { color: var(--coral); }
+.col-mint .col-header { color: var(--navy); }
+.col-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: clamp(6px, 1vh, 12px); }
+.col-list li { background: var(--white); border-radius: 9px; padding: clamp(8px, 1.4vh, 12px) clamp(12px, 1.8vw, 20px); font-weight: 500; font-size: clamp(13px, 1.55vw, 19px); line-height: 1.4; color: var(--navy); }
+.col-coral .col-list li { box-shadow: inset 0 0 0 1px rgba(224, 103, 104, 0.25); }
+.col-mint .col-list li { box-shadow: inset 0 0 0 1px rgba(120, 221, 181, 0.45); }
+.two-col-caption { margin-top: var(--sp-m); font-weight: 500; font-size: clamp(15px, 1.8vw, 22px); color: var(--navy); opacity: 0.78; text-align: center; max-width: 900px; line-height: 1.5; }
+.grid { display: grid; gap: clamp(12px, 1.8vw, 22px); width: 100%; max-width: 1100px; margin: 0 auto; direction: rtl; }
+.grid-3x2 { grid-template-columns: repeat(3, 1fr); }
+.grid-cell { background: var(--white); border: 2px solid var(--highlight); border-radius: 12px; padding: clamp(14px, 2vh, 22px) clamp(12px, 1.8vw, 20px); font-weight: 600; font-size: clamp(14px, 1.7vw, 21px); color: var(--navy); text-align: center; line-height: 1.35; min-height: clamp(70px, 11vh, 110px); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(10, 28, 47, 0.05); }
+.flow { display: flex; width: 100%; max-width: 1000px; margin: 0 auto; }
+.flow.vertical { flex-direction: column; align-items: center; gap: clamp(8px, 1.4vh, 14px); }
+.flow-step { background: var(--white); border: 2px solid var(--highlight); border-radius: 14px; padding: clamp(14px, 2.2vh, 22px) clamp(20px, 3vw, 36px); font-weight: 600; font-size: clamp(15px, 1.9vw, 22px); color: var(--navy); text-align: center; width: 100%; max-width: 700px; box-shadow: 0 6px 16px rgba(10, 28, 47, 0.07); }
+.flow-step-sub { display: block; font-weight: 400; font-size: clamp(13px, 1.5vw, 17px); color: var(--navy); opacity: 0.7; margin-top: 4px; }
+.flow-arrow { color: var(--highlight); font-weight: 900; font-size: clamp(22px, 3vw, 36px); line-height: 1; user-select: none; }
+.flow.vertical .flow-arrow { transform: rotate(90deg); }
+.nav { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 8px; z-index: 100; background: rgba(10, 28, 47, 0.85); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid rgba(120, 221, 181, 0.3); border-radius: 999px; padding: 6px 10px; direction: ltr; font-family: var(--font); }
+.nav button { background: transparent; border: none; color: var(--white); font-family: var(--font); font-size: 16px; font-weight: 600; width: 34px; height: 34px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+.nav button:hover { background: rgba(120, 221, 181, 0.18); }
+.nav button:disabled { opacity: 0.35; cursor: not-allowed; }
+.nav .counter { color: var(--white); font-size: 13px; font-weight: 500; min-width: 50px; text-align: center; letter-spacing: 0.05em; }
+.nav .fs-btn { margin-right: 4px; font-size: 14px; }
+@media (max-height: 700px) { .layout-a .content { padding-top: clamp(50px, 7vh, 90px); padding-bottom: clamp(70px, 10vh, 110px); } .layout-b .content, .layout-c .content, .layout-d .content, .layout-e .content, .layout-f .content { padding-top: clamp(45px, 11vh, 100px); padding-bottom: clamp(45px, 10vh, 90px); } }
+@media (max-height: 600px) { .opening-stack { gap: var(--sp-s); } .closing-stack { gap: var(--sp-s); } }
+@media (max-width: 768px) { .two-col { grid-template-columns: 1fr; } .grid-3x2 { grid-template-columns: repeat(2, 1fr); } .nav { bottom: 8px; } .speaker-title div { font-size: 12px; } }
+@media (max-width: 380px) { .grid-3x2 { grid-template-columns: 1fr; } }
+.slide.fade-init { transition: opacity 0.55s ease, transform 0.55s ease; }
+.slide-tight .content { padding-top: clamp(60px, 14vh, 120px) !important; padding-bottom: clamp(45px, 10vh, 90px) !important; }
+.slide-tight .slide-title { font-size: clamp(22px, 2.8vw, 32px); margin-bottom: 4px; }
+.slide-tight .divider { margin: clamp(8px, 1.5vh, 14px) auto; }
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+<section class="slide layout-a active" data-idx="1"><div class="slide-bg"></div><div class="content"><div class="opening-stack"><h1 class="deck-h1">קשר שמייצר שינוי</h1><h2 class="deck-h2">התהליך הטיפולי, והרציפות ההתקשרותית</h2><div class="divider divider-wide"></div><div class="speaker-block"><div class="speaker-name">חזקי גלבוע</div><div class="speaker-title"><div>עו”ס קליני (MSW), מומחה לגילאי</div><div>ההתבגרות והתנהגויות סיכון,</div><div>מייסד ומנהל מרכז ‘נשרים’.</div></div></div></div></div></section>
+<section class="slide layout-c" data-idx="2"><div class="slide-bg"></div><div class="content"><h2 class="slide-title">מה תפקידנו?</h2><div class="divider divider-short"></div><div class="card-list"><div class="card"><p class="card-text">כאב כרוני</p></div><div class="card"><p class="card-text">יציאה ממרחב סיבולת</p></div><div class="card"><p class="card-text">דריכות יתר</p></div></div></div></section>
+<section class="slide layout-c" data-idx="3"><div class="slide-bg"></div><div class="content"><h2 class="slide-title">איך זה נראה?</h2><div class="divider divider-short"></div><div class="card-list"><div class="card"><p class="card-text">עוררות</p></div><div class="card"><p class="card-text">הימנעות</p></div><div class="card"><p class="card-text">המטרה: לייצר גמישות, להכניס לחלון הסיבולת, ולהפחית כרוניות</p></div></div></div></section>
+<section class="slide layout-c" data-idx="4"><div class="slide-bg"></div><div class="content"><h2 class="slide-title">למה שנכיל כאב?</h2><div class="divider divider-short"></div><div class="card-list"><div class="card"><p class="card-text">תינוק לא נולד עם ויסות עצמי — הוא זקוק למיכל חיצוני (האם)</p></div><div class="card"><p class="card-text">האם לוקחת חוויה לא־מעובדת, מעבדת אותה במיכל שלה, ומחזירה מרגיעה</p></div><div class="card"><p class="card-text">הטון הזה בונה אצל הילד את ה”בלנדר” הפנימי שלו — יכולת עיבוד עצמית</p></div></div></div></section>
+<section class="slide layout-f" data-idx="5"><div class="slide-bg"></div><div class="content"><h2 class="slide-title">מה קרה ל’בלנדר’?</h2><div class="divider divider-short"></div><div class="flow vertical"><div class="flow-step">אירועים קשים מדי<span class="flow-step-sub">אבנים שנכנסו פנימה</span></div><div class="flow-arrow">→</div><div class="flow-step">האבנים שברו את הסכינים<span class="flow-step-sub">יכולת העיבוד נפגעה</span></div><div class="flow-arrow">→</div><div class="flow-step">אובדן האמון ביכולת העיבוד<span class="flow-step-sub">מעבר לאסטרטגיות הישרדות במקום עיבוד</span></div></div></div></section>
+<section class="slide layout-f" data-idx="6"><div class="slide-bg"></div><div class="content"><h2 class="slide-title">תהליך טיפולי ממעוף הציפור</h2><div class="divider divider-short"></div><div class="flow vertical"><div class="flow-step">הכלה<span class="flow-step-sub">שיקום הסכינים של הבלנדר</span></div><div class="flow-arrow">→</div><div class="flow-step">ריפוי<span class="flow-step-sub">הוצאת האבנים מהבלנדר</span></div><div class="flow-arrow">→</div><div class="flow-step">אחריות<span class="flow-step-sub">החזרת השימוש בבלנדר לאוטומט</span></div></div></div></section>
+<section class="slide layout-b" data-idx="7"><div class="slide-bg"></div><div class="content"><div class="single-idea"><h2 class="slide-title">מה נדרש בשביל זה?</h2><div class="divider divider-short"></div><p class="big-statement"><span class="mint">מצע טיפולי</span><span style="opacity:0.5; padding: 0 12px;">+</span><span>תהליך של עיבוד</span></p></div></div></section>
+<section class="slide layout-d" data-idx="8"><div class="slide-bg"></div><div class="content"><h2 class="slide-title">עיבוד מול מצע</h2><div class="divider divider-short"></div><div class="two-col"><div class="col col-coral"><h3 class="col-header">עיבוד</h3><ul class="col-list"><li>גורמי הפתעה</li><li>גורמי התבדות</li><li>זהויות שאסור שיחשפו</li></ul></div><div class="col col-mint"><h3 class="col-header">מצע</h3><ul class="col-list"><li>אמון וביטחון</li><li>יציבות והמשכיות</li><li>היכולת לחיות בסרט</li></ul></div></div><p class="two-col-caption">עיבוד מזיז אבנים שמפריעים לרצף &nbsp;·&nbsp; מצע מייצר את הרצף עצמו</p></div></section>
+<section class="slide layout-c" data-idx="9"><div class="slide-bg"></div><div class="content"><h2 class="slide-title">תהליך של עיבוד</h2><div class="divider divider-short"></div><div class="card-list"><div class="card"><p class="card-text">איך אני מזהה את האירועים המחוללים?</p></div><div class="card"><p class="card-text">ההבנה — מה קרה בהם?</p></div><div class="card"><p class="card-text">העיבוד — מה עושים איתם?</p></div></div></div></section>
+<section class="slide layout-c" data-idx="10"><div class="slide-bg"></div><div class="content"><h2 class="slide-title">תפקידו של המצע</h2><div class="divider divider-short"></div><div class="card-list"><div class="card"><p class="card-text">היכולת להיחשף</p></div><div class="card"><p class="card-text">היכולת לפקפק במסקנות קודמות</p></div><div class="card"><p class="card-text">היכולת לגדול בלי לשקול צעדים</p></div><div class="card"><p class="card-text">היכולת ‘לחיות בסרט’</p></div></div></div></section>
+<section class="slide layout-c" data-idx="11"><div class="slide-bg"></div><div class="content"><h2 class="slide-title">מה כולל המצע?</h2><div class="divider divider-short"></div><div class="card-list"><div class="card"><p class="card-text">מי אני בעיניו</p><p class="card-subtext">דמות של מנהיג</p></div><div class="card"><p class="card-text">מי הוא בעיני</p><p class="card-subtext">זהות שמגדלת</p></div><div class="card"><p class="card-text">רציפות התקשרותית</p><p class="card-subtext">יש קשר, גם כשאין</p></div><div class="card"><p class="card-text">מרחב משחקיות</p><p class="card-subtext">אשליות של גדולה</p></div></div></div></section>
+<section class="slide layout-a" data-idx="12"><div class="slide-bg"></div><div class="content"><div class="transition-stack"><h1 class="deck-h1">רציפות התקשרותית</h1><div class="divider divider-mid"></div><p class="transition-descriptor">קשר לא מתבטא בהיעדר טעויות,<br />אלא ביכולת שלו להכיל טעויות.</p></div></div></section>
+<section class="slide layout-e" data-idx="13"><div class="slide-bg"></div><div class="content"><h2 class="slide-title">כשל אמפתי — איך זה נראה?</h2><div class="divider divider-short"></div><div class="grid grid-3x2"><div class="grid-cell">חתול שחור</div><div class="grid-cell">תקשורת שנקטעת</div><div class="grid-cell">המתנה לא אופיינית לסוף הפגישה</div><div class="grid-cell">תחושת פספוס או "שדרכתי על משהו"</div><div class="grid-cell">נוקשות שפתאום צצה</div><div class="grid-cell">כל סימון להתקשרות שהפכה ללא צפויה</div></div></div></section>
+<section class="slide layout-e" data-idx="14"><div class="slide-bg"></div><div class="content"><h2 class="slide-title">מתי זה קורה?</h2><div class="divider divider-short"></div><div class="grid grid-3x2"><div class="grid-cell">תוך כדי שיח</div><div class="grid-cell">במענה לשאלה</div><div class="grid-cell">בשינויים של לוז</div><div class="grid-cell">בתהליך גביית התשלום</div><div class="grid-cell">בשיח על שיח חיצוני שהתרחש</div><div class="grid-cell">לסיכום — בכל התקשרות</div></div></div></section>
+<section class="slide layout-c" data-idx="15"><div class="slide-bg"></div><div class="content"><h2 class="slide-title">חייבים להיכשל בשביל לבנות</h2><div class="divider divider-short"></div><div class="card-list"><div class="card"><p class="card-text">שיקום האמון</p></div><div class="card"><p class="card-text">יצירת רציפות</p></div><div class="card"><p class="card-text">לגיטימציה לאנושיות</p></div></div></div></section>
+<section class="slide layout-c" data-idx="16"><div class="slide-bg"></div><div class="content"><h2 class="slide-title">איך עושים מהלימון לימונדה?</h2><div class="divider divider-short"></div><div class="card-list dense"><div class="card"><p class="card-text">לוקחים אחריות</p><p class="card-subtext">מי ילמד אותו את זה?</p></div><div class="card"><p class="card-text">מתייחסים לשבר בלגיטימיות, אבל בפליאה</p></div><div class="card"><p class="card-text">"אתה מצפה שאזהר, או שאהיה משוחרר ואתה תזהיר?"</p><p class="card-subtext">שיבחר להיות גדול, למרות שזה אומר שלפעמים יפגע</p></div><div class="card"><p class="card-text">היחס לקשר כיציב, לקיחת אחריות, אי חיפוש האשמים — חשובים יותר מהכאן ועכשיו</p></div></div></div></section>
+<section class="slide layout-c slide-tight" data-idx="17"><div class="slide-bg"></div><div class="content"><h2 class="slide-title">כשל אמפתי — פרקטיקה מגדלת</h2><div class="divider divider-short"></div><div class="card-list xdense"><div class="card card-numbered"><div class="card-num">1</div><p class="card-text">לא שמתי לב שאני דורך עליך</p></div><div class="card card-numbered"><div class="card-num">2</div><p class="card-text">אני שם לב שלא שמתי לב</p></div><div class="card card-numbered"><div class="card-num">3</div><p class="card-text">אני לא מתגונן — מותר לי להתנצל, אני לא מצטדק</p></div><div class="card card-numbered"><div class="card-num">4</div><p class="card-text">אני רואה אותך, בעצם זה ששמתי לב לזה</p></div><div class="card card-numbered"><div class="card-num">5</div><p class="card-text">אני נינוח, ואין לי צד שמשהו נשבר</p></div><div class="card card-numbered"><div class="card-num">6</div><p class="card-text">אני מבין למה זה היה דורך עבורך</p></div><div class="card card-numbered"><div class="card-num">7</div><p class="card-text">והכול ממשיך</p></div></div></div></section>
+<section class="slide layout-b" data-idx="18"><div class="slide-bg"></div><div class="content"><div class="single-idea"><p class="big-statement"><span style="display:block;">רציפות לא קורית כשאין רעידות אדמה —</span><span style="display:block; margin-top: 0.4em;">אלא דווקא <span class="accent">כשהיא צולחת אותן.</span></span></p></div></div></section>
+<section class="slide layout-a" data-idx="19"><div class="slide-bg"></div><div class="content"><div class="closing-stack"><p class="closing-headline">לייעוץ ומענה:</p><p class="closing-phone">053-766-1500</p><p class="closing-website">nesharim.org.il</p></div></div></section>
+</div>
+<nav class="nav" aria-label="ניווט מצגת"><button id="prev" aria-label="שקף קודם">‹</button><span class="counter" id="counter">1 / 19</span><button id="next" aria-label="שקף הבא">›</button><button class="fs-btn" id="fs" aria-label="מסך מלא">⛶</button></nav>
+<script>
+(function () {
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const counter = document.getElementById('counter');
+  const prevBtn = document.getElementById('prev');
+  const nextBtn = document.getElementById('next');
+  const fsBtn   = document.getElementById('fs');
+  let idx = 0;
+  function setActive(i) {
+    idx = Math.max(0, Math.min(slides.length - 1, i));
+    slides.forEach((s, k) => s.classList.toggle('active', k === idx));
+    counter.textContent = (idx + 1) + ' / ' + slides.length;
+    prevBtn.disabled = idx === 0;
+    nextBtn.disabled = idx === slides.length - 1;
+    const active = slides[idx];
+    active.style.opacity = 0;
+    active.style.transform = 'translateY(14px)';
+    void active.offsetHeight;
+    active.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    active.style.opacity = 1;
+    active.style.transform = 'translateY(0)';
+  }
+  function next() { setActive(idx + 1); }
+  function prev() { setActive(idx - 1); }
+  nextBtn.addEventListener('click', next);
+  prevBtn.addEventListener('click', prev);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft')  next();
+    if (e.key === 'ArrowRight') prev();
+    if (e.key === 'ArrowDown' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); next(); }
+    if (e.key === 'ArrowUp'   || e.key === 'PageUp')                    { e.preventDefault(); prev(); }
+    if (e.key === 'Home') setActive(0);
+    if (e.key === 'End')  setActive(slides.length - 1);
+    if (e.key === 'f' || e.key === 'F') toggleFs();
+  });
+  let touchStartX = null;
+  document.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; }, { passive: true });
+  document.addEventListener('touchend',   (e) => {
+    if (touchStartX === null) return;
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(dx) > 60) {
+      if (dx > 0) prev(); else next();
+    }
+    touchStartX = null;
+  });
+  function toggleFs() {
+    const el = document.documentElement;
+    if (!document.fullscreenElement) (el.requestFullscreen || el.webkitRequestFullscreen)?.call(el);
+    else (document.exitFullscreen || document.webkitExitFullscreen)?.call(document);
+  }
+  fsBtn.addEventListener('click', toggleFs);
+  window.addEventListener('load', () => {
+    slides.forEach(s => { s.style.opacity = 0; s.style.transform = 'translateY(20px)'; });
+    slides.forEach(s => { s.offsetHeight; s.style.transition = 'opacity 0.6s ease, transform 0.6s ease'; });
+    const first = slides[0];
+    first.style.opacity = 1;
+    first.style.transform = 'translateY(0)';
+  });
+})();
+</script>
+</body>
+</html>
