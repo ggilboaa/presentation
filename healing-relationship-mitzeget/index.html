@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>קשר מרפא — חזקי גלבוע</title>
+<style>
+@font-face { font-family: 'Paamon'; src: url('paamon-light-aaa.otf') format('opentype'); font-weight: 300; font-style: normal; }
+@font-face { font-family: 'Paamon'; src: url('paamon-regular-aaa.otf') format('opentype'); font-weight: 400; font-style: normal; }
+@font-face { font-family: 'Paamon'; src: url('paamon-medium-aaa.otf') format('opentype'); font-weight: 500; font-style: normal; }
+@font-face { font-family: 'Paamon'; src: url('paamon-bold-aaa.otf') format('opentype'); font-weight: 700; font-style: normal; }
+@font-face { font-family: 'Paamon'; src: url('paamon-black-aaa.otf') format('opentype'); font-weight: 900; font-style: normal; }
+</style>
+<style>
+:root { --highlight: #78DDB5; --navy: #0A1C2F; --white: #FFFFFF; --coral: #E06768; --sp-s: 16px; --sp-m: 32px; --sp-l: 56px; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { font-family: 'Paamon', 'Heebo', 'Assistant', Arial, sans-serif; direction: rtl; background: var(--navy); overflow: hidden; height: 100vh; }
+.slides-container { position: relative; width: 100vw; height: 100vh; overflow: hidden; }
+.slide { position: absolute; inset: 0; width: 100%; height: 100vh; overflow: hidden; display: none; }
+.slide.active { display: block; }
+.slide-bg { position: absolute; inset: 0; background-size: cover; background-position: center; z-index: 0; }
+.layout-a .slide-bg { background-image: url('bgfullblue.jpg'); }
+.layout-b .slide-bg, .layout-c .slide-bg, .layout-d .slide-bg, .layout-e .slide-bg, .layout-f .slide-bg { background-image: url('bgframeblue.jpg'); }
+.content { position: relative; z-index: 1; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: clamp(40px, 6vw, 80px); }
+.layout-b .content, .layout-c .content, .layout-d .content, .layout-e .content, .layout-f .content { padding-top: clamp(100px, 13vh, 140px); padding-bottom: clamp(80px, 12vh, 120px); padding-inline: clamp(60px, 8vw, 120px); }
+h1 { font-family: 'Paamon', sans-serif; font-size: clamp(36px, 5.5vw, 72px); font-weight: 900; line-height: 1.1; color: var(--white); }
+h2 { font-family: 'Paamon', sans-serif; font-size: clamp(20px, 3vw, 36px); font-weight: 500; line-height: 1.25; color: var(--white); }
+.layout-b .slide-title, .layout-c .slide-title, .layout-d .slide-title, .layout-e .slide-title, .layout-f .slide-title { color: var(--navy); font-weight: 700; font-size: clamp(28px, 3.6vw, 44px); margin-bottom: var(--sp-s); }
+.divider { width: 80px; height: 3px; background: var(--highlight); border-radius: 2px; margin: var(--sp-m) auto; }
+.divider-wide { width: 120px; }
+.divider-narrow { width: 60px; margin: var(--sp-s) auto var(--sp-m); }
+.opening-content { max-width: 900px; }
+.opening-content h1 { font-size: clamp(48px, 7vw, 96px); font-weight: 900; margin-bottom: var(--sp-m); color: var(--white); }
+.opening-content h2 { font-size: clamp(20px, 2.6vw, 32px); font-weight: 400; color: var(--white); line-height: 1.4; max-width: 700px; margin: 0 auto; }
+.speaker-name { font-size: clamp(24px, 3vw, 36px); font-weight: 700; color: var(--white); margin-top: var(--sp-l); }
+.speaker-title { font-size: clamp(13px, 1.4vw, 17px); font-weight: 400; color: var(--white); line-height: 1.6; margin-top: var(--sp-s); opacity: 0.9; }
+.speaker-title div { margin: 2px 0; }
+.closing-content { max-width: 700px; }
+.closing-headline { font-size: clamp(24px, 3.2vw, 40px); font-weight: 700; color: var(--white); margin-bottom: var(--sp-m); }
+.closing-phone { font-size: clamp(40px, 6.5vw, 72px); font-weight: 900; color: var(--highlight); letter-spacing: 1px; margin-bottom: var(--sp-m); }
+.closing-website { font-size: clamp(16px, 2vw, 24px); font-weight: 500; color: var(--white); }
+.transition-content { max-width: 1000px; }
+.transition-content h1 { font-size: clamp(40px, 6vw, 80px); font-weight: 900; color: var(--white); margin-bottom: var(--sp-s); }
+.transition-content .subtitle { font-size: clamp(18px, 2.4vw, 30px); font-weight: 400; color: var(--white); margin-bottom: var(--sp-l); opacity: 0.92; }
+.transition-content .quote-line { font-size: clamp(20px, 2.8vw, 32px); font-weight: 500; color: var(--highlight); line-height: 1.4; max-width: 880px; margin: 0 auto; }
+.layout-b .big-statement { font-size: clamp(32px, 4.6vw, 60px); font-weight: 700; color: var(--navy); line-height: 1.25; max-width: 1000px; margin: 0 auto; }
+.layout-b .big-statement .accent { color: var(--coral); font-weight: 900; }
+.layout-b .subtext { font-size: clamp(18px, 2.2vw, 26px); font-weight: 500; color: var(--navy); margin-top: var(--sp-l); max-width: 800px; line-height: 1.5; opacity: 0.85; }
+.card-list { display: flex; flex-direction: column; gap: clamp(14px, 1.8vh, 22px); width: 100%; max-width: 900px; margin: 0 auto; }
+.card { background: var(--white); border: 2px solid var(--highlight); border-radius: 14px; padding: clamp(14px, 2vh, 22px) clamp(20px, 3vw, 36px); text-align: center; box-shadow: 0 2px 8px rgba(10,28,47,0.06); }
+.card-text { font-size: clamp(17px, 2vw, 24px); font-weight: 600; color: var(--navy); line-height: 1.35; }
+.card-subtext { font-size: clamp(13px, 1.5vw, 17px); font-weight: 400; color: var(--navy); opacity: 0.7; margin-top: 4px; }
+.card-list.dense { gap: clamp(10px, 1.4vh, 16px); }
+.card-list.dense .card { padding: clamp(10px, 1.6vh, 18px) clamp(18px, 2.4vw, 30px); }
+.two-col { display: flex; gap: clamp(16px, 2.5vw, 32px); width: 100%; max-width: 1000px; margin: 0 auto; }
+.two-col .col { flex: 1; background: var(--white); border-radius: 14px; padding: clamp(20px, 3vh, 36px) clamp(20px, 2.5vw, 32px); text-align: center; }
+.two-col .col.col-mint { border: 2px solid var(--highlight); }
+.two-col .col.col-coral { border: 2px solid var(--coral); }
+.col-header { font-size: clamp(20px, 2.6vw, 28px); font-weight: 700; margin-bottom: var(--sp-s); }
+.col-mint .col-header { color: #4CB893; }
+.col-coral .col-header { color: var(--coral); }
+.col-content { font-size: clamp(16px, 2vw, 22px); font-weight: 500; color: var(--navy); line-height: 1.5; }
+.col-icon { width: clamp(48px, 6vw, 72px); height: clamp(48px, 6vw, 72px); margin: 0 auto var(--sp-s); display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+.col-mint .col-icon { background: rgba(120,221,181,0.18); }
+.col-coral .col-icon { background: rgba(224,103,104,0.15); }
+.col-icon svg { width: 56%; height: 56%; }
+.col-mint .col-icon svg { stroke: #4CB893; fill: none; }
+.col-coral .col-icon svg { stroke: var(--coral); fill: none; }
+.zones-row { display: flex; width: 100%; max-width: 950px; margin: 0 auto var(--sp-l); background: #F4F4F4; border-radius: 14px; padding: clamp(16px, 2.5vh, 24px) clamp(16px, 2.5vw, 28px); gap: clamp(12px, 1.5vw, 18px); }
+.zone { flex: 1; border-radius: 10px; padding: clamp(18px, 3vh, 30px) clamp(12px, 1.8vw, 22px); text-align: center; }
+.zone-coral { background: #E89090; }
+.zone-mint { background: var(--highlight); flex: 1.5; }
+.zone-label { font-size: clamp(13px, 1.4vw, 17px); font-weight: 500; color: var(--navy); opacity: 0.75; margin-bottom: 4px; }
+.zone-title { font-size: clamp(20px, 2.6vw, 30px); font-weight: 900; color: var(--navy); line-height: 1.1; }
+.earthquake-graph { width: 100%; max-width: 900px; margin: var(--sp-l) auto 0; }
+.earthquake-graph svg { width: 100%; height: auto; display: block; }
+.grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: clamp(12px, 1.8vh, 20px) clamp(14px, 2vw, 24px); width: 100%; max-width: 1000px; margin: 0 auto; }
+.grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+.grid-cell { background: var(--white); border: 2px solid var(--highlight); border-radius: 12px; padding: clamp(14px, 2vh, 22px) clamp(12px, 1.8vw, 22px); text-align: center; display: flex; align-items: center; justify-content: center; min-height: clamp(60px, 9vh, 90px); }
+.grid-cell-text { font-size: clamp(14px, 1.7vw, 20px); font-weight: 600; color: var(--navy); line-height: 1.3; }
+.flow { display: flex; align-items: center; justify-content: center; gap: clamp(8px, 1.5vw, 18px); width: 100%; max-width: 1100px; margin: 0 auto; }
+.flow.vertical { flex-direction: column; gap: clamp(8px, 1.4vh, 14px); }
+.flow-step { background: var(--white); border: 2px solid var(--highlight); border-radius: 14px; padding: clamp(14px, 2.2vh, 24px) clamp(16px, 2.4vw, 28px); text-align: center; flex: 1; min-width: 0; }
+.flow.vertical .flow-step { flex: 0 0 auto; width: 100%; max-width: 720px; }
+.flow-step-text { font-size: clamp(15px, 1.9vw, 22px); font-weight: 600; color: var(--navy); line-height: 1.35; }
+.flow-arrow { color: var(--highlight); font-size: clamp(28px, 3.5vw, 44px); font-weight: 900; line-height: 1; flex: 0 0 auto; }
+.flow.vertical .flow-arrow { transform: rotate(90deg); }
+.nav-controls { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 12px; z-index: 100; background: rgba(10,28,47,0.65); padding: 8px 14px; border-radius: 30px; }
+.nav-btn { background: var(--highlight); color: var(--navy); border: none; width: 36px; height: 36px; border-radius: 50%; font-size: 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.nav-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.slide-counter { color: var(--white); font-size: 14px; font-weight: 500; min-width: 50px; text-align: center; }
+.fullscreen-btn { background: transparent; border: 1.5px solid var(--white); color: var(--white); width: 32px; height: 32px; border-radius: 50%; cursor: pointer; }
+@media (max-width: 768px) { .two-col { flex-direction: column; } .grid.cols-3 { grid-template-columns: repeat(2, 1fr); } }
+</style>
+</head>
+<body>
+<div class="slides-container">
+<div class="slide layout-a active" data-idx="1"><div class="slide-bg"></div><div class="content"><div class="opening-content"><h1>קשר מרפא</h1><h2>התהליך הטיפולי, והרציפות ההתקשרותית</h2><div class="divider divider-wide"></div><div class="speaker-name">חזקי גלבוע</div><div class="speaker-title"><div>עו"ס קליני (MSW), מומחה לגילאי</div><div>ההתבגרות והתנהגויות סיכון,</div><div>מייסד ומנהל מרכז 'נשרים'.</div></div></div></div></div>
+<div class="slide layout-c" data-idx="2"><div class="slide-bg"></div><div class="content"><h2 class="slide-title">מה תפקידנו?</h2><div class="divider divider-narrow"></div><div class="card-list"><div class="card"><p class="card-text">כאב כרוני</p></div><div class="card"><p class="card-text">יציאה ממרחב הסיבולת</p></div><div class="card"><p class="card-text">דריכות יתר</p></div></div></div></div>
+<div class="slide layout-b" data-idx="3"><div class="slide-bg"></div><div class="content"><h2 class="slide-title">איך זה נראה?</h2><div class="divider divider-narrow"></div><div class="zones-row"><div class="zone zone-coral"><div class="zone-label">מתחת לחלון</div><div class="zone-title">הימנעות</div></div><div class="zone zone-mint"><div class="zone-label">אזור בריא</div><div class="zone-title">חלון הסיבולת</div></div><div class="zone zone-coral"><div class="zone-label">מעל החלון</div><div class="zone-title">עוררות</div></div></div><p class="subtext">המטרה: לייצר גמישות, להכניס לחלון הסיבולת, ולהפחית כרוניות</p></div></div>
+<div class="slide layout-c" data-idx="4"><div class="slide-bg"></div><div class="content"><h2 class="slide-title">למה שנכיל כאב?</h2><div class="divider divider-narrow"></div><div class="card-list"><div class="card"><p class="card-text">תינוק לא נולד עם ויסות עצמי — הוא זקוק למיכל חיצוני (האם)</p></div><div class="card"><p class="card-text">האם לוקחת חוויה לא־מעובדת, מעבדת אותה במיכל שלה, ומחזירה מרגיעה</p></div><div class="card"><p class="card-text">הטון הזה בונה אצל הילד את ה"בלנדר" הפנימי שלו — יכולת עיבוד עצמית</p></div></div></div></div>
+<div class="slide layout-f" data-idx="5"><div class="slide-bg"></div><div class="content"><h2 class="slide-title">מה קרה ל'בלנדר'?</h2><div class="divider divider-narrow"></div><div class="flow vertical"><div class="flow-step"><p class="flow-step-text">אירועים קשים מדי — אבנים שנכנסו פנימה</p></div><div class="flow-arrow">▶</div><div class="flow-step"><p class="flow-step-text">האבנים שברו את הסכינים — יכולת העיבוד נפגעה</p></div><div class="flow-arrow">▶</div><div class="flow-step"><p class="flow-step-text">אובדן האמון בבלנדר — מעבר לאסטרטגיות הישרדות במקום עיבוד</p></div></div></div></div>
+<div class="slide layout-c" data-idx="6"><div class="slide-bg"></div><div class="content"><h2 class="slide-title">תהליך טיפולי ממעוף הציפור</h2><div class="divider divider-narrow"></div><div class="card-list"><div class="card"><p class="card-text">הכלה — שיקום הסכינים של הבלנדר</p></div><div class="card"><p class="card-text">ריפוי — הוצאת האבנים מהבלנדר</p></div><div class="card"><p class="card-text">אחריות — החזרת השימוש בבלנדר לאוטומט</p></div></div></div></div>
+<div class="slide layout-d" data-idx="7"><div class="slide-bg"></div><div class="content"><h2 class="slide-title">מה נדרש בשביל זה?</h2><div class="divider divider-narrow"></div><div class="two-col"><div class="col col-mint"><div class="col-icon"><svg viewBox="0 0 24 24"><rect x="3" y="14" width="6" height="6" stroke-width="2"/><rect x="9" y="14" width="6" height="6" stroke-width="2"/><rect x="15" y="14" width="6" height="6" stroke-width="2"/><rect x="6" y="8" width="6" height="6" stroke-width="2"/><rect x="12" y="8" width="6" height="6" stroke-width="2"/><rect x="9" y="2" width="6" height="6" stroke-width="2"/></svg></div><div class="col-header">מצע טיפולי</div><div class="col-content">התשתית שמאפשרת למטופל להישען, להיחשף ולגדול</div></div><div class="col col-coral"><div class="col-icon"><svg viewBox="0 0 24 24"><path d="M 4 12 a 8 8 0 0 1 14 -5" stroke-width="2" stroke-linecap="round" fill="none"/><path d="M 14 7 L 18 7 L 18 3" stroke-width="2" stroke-linecap="round" fill="none"/><path d="M 20 12 a 8 8 0 0 1 -14 5" stroke-width="2" stroke-linecap="round" fill="none"/><path d="M 10 17 L 6 17 L 6 21" stroke-width="2" stroke-linecap="round" fill="none"/></svg></div><div class="col-header">תהליך של עיבוד</div><div class="col-content">היכולת לזהות, להבין ולעבד את החומר הגולמי</div></div></div></div></div>
+<div class="slide layout-f" data-idx="8"><div class="slide-bg"></div><div class="content"><h2 class="slide-title">תהליך של עיבוד</h2><div class="divider divider-narrow"></div><div class="flow vertical"><div class="flow-step"><p class="flow-step-text">איך אני מזהה את האירועים המחוללים?</p></div><div class="flow-arrow">▶</div><div class="flow-step"><p class="flow-step-text">ההבנה — מה קרה בהם?</p></div><div class="flow-arrow">▶</div><div class="flow-step"><p class="flow-step-text">העיבוד — מה עושים איתם?</p></div></div></div></div>
+<div class="slide layout-c" data-idx="9"><div class="slide-bg"></div><div class="content"><h2 class="slide-title">מה המצע הטיפולי מאפשר?</h2><div class="divider divider-narrow"></div><div class="card-list"><div class="card"><p class="card-text">היכולת להיחשף</p></div><div class="card"><p class="card-text">היכולת לפקפק במסקנות קודמות</p></div><div class="card"><p class="card-text">היכולת לגדול בלי לשקול צעדים</p></div><div class="card"><p class="card-text">היכולת 'לחיות בסרט'</p></div></div></div></div>
+<div class="slide layout-c" data-idx="10"><div class="slide-bg"></div><div class="content"><h2 class="slide-title">מה כולל המצע?</h2><div class="divider divider-narrow"></div><div class="card-list"><div class="card"><p class="card-text">מי אני בעיניו</p><p class="card-subtext">דמות של מנהיג</p></div><div class="card"><p class="card-text">מי הוא בעיני</p><p class="card-subtext">זהות שמגדלת</p></div><div class="card"><p class="card-text">רציפות התקשרותית</p><p class="card-subtext">יש קשר, גם כשאין</p></div><div class="card"><p class="card-text">מרחב משחקיות</p><p class="card-subtext">אשליות של גדולה</p></div></div></div></div>
+<div class="slide layout-a" data-idx="11"><div class="slide-bg"></div><div class="content"><div class="transition-content"><h1>רציפות התקשרותית</h1><p class="subtitle">יש קשר, גם כשאין</p><div class="divider divider-wide"></div><p class="quote-line">קשר לא מתבטא בהיעדר טעויות,<br/>אלא ביכולת שלו להכיל טעויות</p></div></div></div>
+<div class="slide layout-e" data-idx="12"><div class="slide-bg"></div><div class="content"><h2 class="slide-title">כשל אמפתי — איך זה נראה?</h2><div class="divider divider-narrow"></div><div class="grid cols-3"><div class="grid-cell"><p class="grid-cell-text">חתול שחור</p></div><div class="grid-cell"><p class="grid-cell-text">תקשורת שנקטעת</p></div><div class="grid-cell"><p class="grid-cell-text">המתנה לא אופיינית לסוף הפגישה</p></div><div class="grid-cell"><p class="grid-cell-text">תחושת פספוס או "שדרכתי על משהו"</p></div><div class="grid-cell"><p class="grid-cell-text">נוקשות שפתאום צצה</p></div><div class="grid-cell"><p class="grid-cell-text">כל סימון להתקשרות לא צפויה</p></div></div></div></div>
+<div class="slide layout-e" data-idx="13"><div class="slide-bg"></div><div class="content"><h2 class="slide-title">מתי זה קורה?</h2><div class="divider divider-narrow"></div><div class="grid cols-3"><div class="grid-cell"><p class="grid-cell-text">תוך כדי שיח</p></div><div class="grid-cell"><p class="grid-cell-text">במענה לשאלה</p></div><div class="grid-cell"><p class="grid-cell-text">בשינויים של לוז</p></div><div class="grid-cell"><p class="grid-cell-text">בתהליך גביית התשלום</p></div><div class="grid-cell"><p class="grid-cell-text">בשיח על שיח חיצוני שהתרחש</p></div><div class="grid-cell"><p class="grid-cell-text">לסיכום — בכל התקשרות</p></div></div></div></div>
+<div class="slide layout-c" data-idx="14"><div class="slide-bg"></div><div class="content"><h2 class="slide-title">חייבים להיכשל בשביל לבנות</h2><div class="divider divider-narrow"></div><div class="card-list"><div class="card"><p class="card-text">שיקום האמון</p></div><div class="card"><p class="card-text">יצירת רציפות</p></div><div class="card"><p class="card-text">לגיטימציה לאנושיות</p></div></div></div></div>
+<div class="slide layout-c" data-idx="15"><div class="slide-bg"></div><div class="content"><h2 class="slide-title">איך עושים מהלימון לימונדה?</h2><div class="divider divider-narrow"></div><div class="card-list dense"><div class="card"><p class="card-text">רואים שדרכנו</p></div><div class="card"><p class="card-text">שואלים / מבטאים</p></div><div class="card"><p class="card-text">לא נבהלים</p></div><div class="card"><p class="card-text">מתייחסים לשבר בלגיטימיות, אבל בפליאה</p></div><div class="card"><p class="card-text">"אתה מצפה שאזהר, או שאהיה משוחרר ואתה תזהיר?"</p></div><div class="card"><p class="card-text">היחס לקשר כיציב, ואי הבהלה — חשובים יותר מהכאן ועכשיו</p></div></div></div></div>
+<div class="slide layout-b" data-idx="16"><div class="slide-bg"></div><div class="content"><h2 class="slide-title">רציפות נמדדת ברעידות אדמה</h2><div class="divider divider-narrow"></div><p class="big-statement">רציפות לא קורית כשאין <span class="accent">רעידות אדמה</span><br/>אלא דווקא כשהיא צולחת אותן</p><div class="earthquake-graph"><svg viewBox="0 0 900 100" xmlns="http://www.w3.org/2000/svg"><line x1="0" y1="50" x2="900" y2="50" stroke="#0A1C2F" stroke-width="1" stroke-dasharray="3 5" opacity="0.2"/><path d="M 10,50 L 130,50 Q 160,50 175,30 Q 190,50 210,50 L 360,50 Q 390,50 405,15 L 415,80 Q 430,50 460,50 L 600,50 Q 630,50 645,8 L 658,90 Q 675,50 705,50 L 890,50" fill="none" stroke="#78DDB5" stroke-width="3" stroke-linecap="round"/><circle cx="175" cy="30" r="4" fill="#E06768"/><circle cx="410" cy="48" r="4" fill="#E06768"/><circle cx="651" cy="48" r="4" fill="#E06768"/></svg></div></div></div>
+<div class="slide layout-a" data-idx="17"><div class="slide-bg"></div><div class="content"><div class="closing-content"><p class="closing-headline">לייעוץ ומענה:</p><p class="closing-phone">053-766-1500</p><p class="closing-website">nesharim.org.il</p></div></div></div>
+</div>
+<div class="nav-controls"><button class="nav-btn" id="prevBtn">‹</button><span class="slide-counter" id="counter">1 / 17</span><button class="nav-btn" id="nextBtn">›</button><button class="fullscreen-btn" id="fsBtn">⛶</button></div>
+<script>
+(function(){
+const slides=document.querySelectorAll('.slide');
+const prevBtn=document.getElementById('prevBtn');
+const nextBtn=document.getElementById('nextBtn');
+const counter=document.getElementById('counter');
+const fsBtn=document.getElementById('fsBtn');
+let current=0;const total=slides.length;
+function showSlide(idx){if(idx<0||idx>=total)return;slides[current].classList.remove('active');slides[idx].classList.add('active');current=idx;updateUI();}
+function updateUI(){counter.textContent=(current+1)+' / '+total;prevBtn.disabled=current===0;nextBtn.disabled=current===total-1;}
+function next(){if(current<total-1)showSlide(current+1);}
+function prev(){if(current>0)showSlide(current-1);}
+nextBtn.addEventListener('click',next);prevBtn.addEventListener('click',prev);
+document.addEventListener('keydown',(e)=>{if(e.key==='ArrowLeft'||e.key==='PageDown'||e.key===' '){e.preventDefault();next();}else if(e.key==='ArrowRight'||e.key==='PageUp'){e.preventDefault();prev();}else if(e.key==='Home'){e.preventDefault();showSlide(0);}else if(e.key==='End'){e.preventDefault();showSlide(total-1);}else if(e.key==='f'||e.key==='F'){toggleFullscreen();}});
+let sx=0,ex=0;document.addEventListener('touchstart',(e)=>{sx=e.changedTouches[0].screenX;},{passive:true});document.addEventListener('touchend',(e)=>{ex=e.changedTouches[0].screenX;const dx=ex-sx;if(Math.abs(dx)>50){if(dx>0)prev();else next();}},{passive:true});
+function toggleFullscreen(){if(!document.fullscreenElement){document.documentElement.requestFullscreen().catch(()=>{});}else{document.exitFullscreen();}}
+fsBtn.addEventListener('click',toggleFullscreen);
+updateUI();
+})();
+</script>
+</body>
+</html>
