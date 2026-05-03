@@ -4,49 +4,28 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>קשר מרפא — חזקי גלבוע</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 <style>
-:root {
-  --highlight: #78DDB5;
-  --highlight-light: #A6E5CC;
-  --navy: #0A1C2F;
-  --white: #FFFFFF;
-  --coral: #E06768;
-  --light-gray: #F4F4F4;
-  --sp-s: 16px;
-  --sp-m: 32px;
-  --sp-l: 56px;
-}
+@font-face { font-family: 'Paamon'; src: url('paamon-light-aaa.otf') format('opentype'); font-weight: 300; font-style: normal; }
+@font-face { font-family: 'Paamon'; src: url('paamon-regular-aaa.otf') format('opentype'); font-weight: 400; font-style: normal; }
+@font-face { font-family: 'Paamon'; src: url('paamon-medium-aaa.otf') format('opentype'); font-weight: 500; font-style: normal; }
+@font-face { font-family: 'Paamon'; src: url('paamon-bold-aaa.otf') format('opentype'); font-weight: 700; font-style: normal; }
+@font-face { font-family: 'Paamon'; src: url('paamon-black-aaa.otf') format('opentype'); font-weight: 900; font-style: normal; }
+</style>
+<style>
+:root { --highlight: #78DDB5; --highlight-light: #A6E5CC; --navy: #0A1C2F; --white: #FFFFFF; --coral: #E06768; --light-gray: #F4F4F4; --sp-s: 16px; --sp-m: 32px; --sp-l: 56px; }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html, body {
-  font-family: 'Heebo', 'Assistant', Arial, sans-serif;
-  direction: rtl;
-  background: var(--navy);
-  overflow: hidden;
-  height: 100vh;
-}
+html, body { font-family: 'Paamon', 'Heebo', 'Assistant', Arial, sans-serif; direction: rtl; background: var(--navy); overflow: hidden; height: 100vh; }
 .slides-container { position: relative; width: 100vw; height: 100vh; overflow: hidden; }
 .slide { position: absolute; inset: 0; width: 100%; height: 100vh; overflow: hidden; display: none; }
 .slide.active { display: block; }
 .slide-bg { position: absolute; inset: 0; background-size: cover; background-position: center; z-index: 0; }
-.layout-a .slide-bg { background: linear-gradient(135deg, #0A1C2F 0%, #1a2c42 100%); }
-.layout-b .slide-bg, .layout-c .slide-bg, .layout-d .slide-bg, .layout-e .slide-bg, .layout-f .slide-bg {
-  background: #0A1C2F;
-}
-.layout-b .slide-bg::after, .layout-c .slide-bg::after, .layout-d .slide-bg::after, .layout-e .slide-bg::after, .layout-f .slide-bg::after {
-  content: ''; position: absolute; inset: 5% 4%; background: white; border-radius: 12px;
-}
+.layout-a .slide-bg { background-image: url('bgfullblue.jpg'); }
+.layout-b .slide-bg, .layout-c .slide-bg, .layout-d .slide-bg, .layout-e .slide-bg, .layout-f .slide-bg { background-image: url('bgframeblue.jpg'); }
 .content { position: relative; z-index: 1; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: clamp(40px, 6vw, 80px); }
-.layout-b .content, .layout-c .content, .layout-d .content, .layout-e .content, .layout-f .content {
-  padding-top: clamp(80px, 11vh, 120px); padding-bottom: clamp(60px, 10vh, 100px); padding-inline: clamp(60px, 8vw, 120px);
-}
-h1 { font-family: 'Heebo', sans-serif; font-size: clamp(36px, 5.5vw, 72px); font-weight: 900; line-height: 1.1; color: var(--white); }
-h2 { font-family: 'Heebo', sans-serif; font-size: clamp(20px, 3vw, 36px); font-weight: 500; line-height: 1.25; color: var(--white); }
-.layout-b .slide-title, .layout-c .slide-title, .layout-d .slide-title, .layout-e .slide-title, .layout-f .slide-title {
-  color: var(--navy); font-weight: 700; font-size: clamp(28px, 3.6vw, 44px); margin-bottom: var(--sp-s);
-}
+.layout-b .content, .layout-c .content, .layout-d .content, .layout-e .content, .layout-f .content { padding-top: clamp(100px, 13vh, 140px); padding-bottom: clamp(80px, 12vh, 120px); padding-inline: clamp(60px, 8vw, 120px); }
+h1 { font-family: 'Paamon', sans-serif; font-size: clamp(36px, 5.5vw, 72px); font-weight: 900; line-height: 1.1; color: var(--white); }
+h2 { font-family: 'Paamon', sans-serif; font-size: clamp(20px, 3vw, 36px); font-weight: 500; line-height: 1.25; color: var(--white); }
+.layout-b .slide-title, .layout-c .slide-title, .layout-d .slide-title, .layout-e .slide-title, .layout-f .slide-title { color: var(--navy); font-weight: 700; font-size: clamp(28px, 3.6vw, 44px); margin-bottom: var(--sp-s); }
 .divider { width: 80px; height: 3px; background: var(--highlight); border-radius: 2px; margin: var(--sp-m) auto; }
 .divider-wide { width: 120px; }
 .divider-narrow { width: 60px; margin: var(--sp-s) auto var(--sp-m); }
@@ -132,7 +111,7 @@ h2 { font-family: 'Heebo', sans-serif; font-size: clamp(20px, 3vw, 36px); font-w
 <div class="slide layout-c" data-idx="14"><div class="slide-bg"></div><div class="content"><h2 class="slide-title">חייבים להיכשל בשביל לבנות</h2><div class="divider divider-narrow"></div><div class="card-list"><div class="card"><p class="card-text">שיקום האמון</p></div><div class="card"><p class="card-text">יצירת רציפות</p></div><div class="card"><p class="card-text">לגיטימציה לאנושיות</p></div></div></div></div>
 <div class="slide layout-c" data-idx="15"><div class="slide-bg"></div><div class="content"><h2 class="slide-title">איך עושים מהלימון לימונדה?</h2><div class="divider divider-narrow"></div><div class="card-list dense"><div class="card"><p class="card-text">רואים שדרכנו</p></div><div class="card"><p class="card-text">שואלים / מבטאים</p></div><div class="card"><p class="card-text">לא נבהלים</p></div><div class="card"><p class="card-text">מתייחסים לשבר בלגיטימיות, אבל בפליאה</p></div><div class="card"><p class="card-text">"אתה מצפה שאזהר, או שאהיה משוחרר ואתה תזהיר?"</p></div><div class="card"><p class="card-text">היחס לקשר כיציב, ואי הבהלה — חשובים יותר מהכאן ועכשיו</p></div></div></div></div>
 <div class="slide layout-b" data-idx="16"><div class="slide-bg"></div><div class="content"><h2 class="slide-title">רציפות נמדדת ברעידות אדמה</h2><div class="divider divider-narrow"></div><p class="big-statement">רציפות לא קורית כשאין <span class="accent">רעידות אדמה</span><br/>אלא דווקא כשהיא צולחת אותן</p><div class="earthquake-graph"><svg viewBox="0 0 900 100" xmlns="http://www.w3.org/2000/svg"><line x1="0" y1="50" x2="900" y2="50" stroke="#0A1C2F" stroke-width="1" stroke-dasharray="3 5" opacity="0.2"/><path d="M 10,50 L 130,50 Q 160,50 175,30 Q 190,50 210,50 L 360,50 Q 390,50 405,15 L 415,80 Q 430,50 460,50 L 600,50 Q 630,50 645,8 L 658,90 Q 675,50 705,50 L 890,50" fill="none" stroke="#78DDB5" stroke-width="3" stroke-linecap="round"/><circle cx="175" cy="30" r="4" fill="#E06768"/><circle cx="410" cy="48" r="4" fill="#E06768"/><circle cx="651" cy="48" r="4" fill="#E06768"/></svg></div></div></div>
-<div class="slide layout-a" data-idx="17"><div class="slide-bg"></div><div class="content"><div class="closing-content"><p class="closing-headline">לייעוץ ומענה:</p><p class="closing-phone">053-766-1500</p><p class="closing-website">nesharim.org.il</p></div></div></div>
+<div class="slide layout-a" data-idx="17"><div class="slide-bg"></div><div class="content"><div class="closing-content"><p class="closing-headline">לייעוץ כשהיא צולחת אותן:</p><p class="closing-phone">053-766-1500</p><p class="closing-website">nesharim.org.il</p></div></div></div>
 </div>
 <div class="nav-controls"><button class="nav-btn" id="prevBtn">‹</button><span class="slide-counter" id="counter">1 / 17</span><button class="nav-btn" id="nextBtn">›</button><button class="fullscreen-btn" id="fsBtn">⛶</button></div>
 <script>
