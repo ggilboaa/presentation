@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>נהלים ודגשים למטפל/ת – נשרים</title>
+    <!-- Google Fonts & Font Awesome Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;500;600;700&family=Heebo:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #0A1C2F;
+            --primary-light: #1A3A42;
+            --accent: #78DDB5;
+            --accent-dark: #52B792;
+            --bg-body: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --text-main: #0A1C2F;
+            --text-muted: #475569;
+            --border-color: #E2E8F0;
+            
+            /* צבעי תיבות הדגש המעודנים */
+            --why-border: #EBC13A;
+            --why-bg: rgba(235, 193, 58, 0.06);
+            --why-text: #0A1C2F;
+            
+            --note-border: #78DDB5;
+            --note-bg: rgba(120, 221, 181, 0.08);
+            --note-text: #0A1C2F;
+            
+            --important-border: #E06768;
+            --important-bg: rgba(224, 103, 104, 0.08);
+            --important-text: #0A1C2F;
+            
+            --sidebar-width: 300px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Assistant', sans-serif;
+            line-height: 1.8;
+            color: var(--text-main);
+            background: var(--bg-body);
+            overflow-x: hidden;
+        }
+
+        .app-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* מובייל: סרגל עליון קבוע */
+        .mobile-header {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 65px;
+            background: var(--primary);
+            color: white;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 1010;
+            box-shadow: 0 4px 20px rgba(10, 28, 47, 0.1);
+        }
+
+        .mobile-header-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            height: 100%;
+        }
+
+        .mobile-header-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .mobile-header-logo svg {
+            width: 36px;
+            height: 36px;
+            display: block;
+            filter: brightness(0) invert(1) drop-shadow(0 2px 4px rgba(0,0,0,0.15)); /* תיקון נראות מוחלט לפאנל מובייל */
+        }
+
+        .mobile-header h1 {
+            font-family: 'Heebo', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            line-height: 1;
+            margin: 0;
+        }
+
+        .menu-toggle {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+        .menu-toggle:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* מובייל: סרגל ניווט פרקים צף וקבוע */
+        .mobile-sub-nav {
+            display: none;
+            position: fixed;
+            top: 65px;
+            left: 0;
+            right: 0;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 1009;
+            border-bottom: 1px solid var(--border-color);
+            overflow-x: auto;
+            white-space: nowrap;
+            padding: 0 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+            scrollbar-width: none;
+        }
+        .mobile-sub-nav::-webkit-scrollbar {
+            display: none;
+        }
+
+        .mobile-sub-nav a {
+            display: inline-flex;
+            align-items: center;
+            height: 100%;
+            padding: 0 14px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 13.5px;
+            font-family: 'Heebo', sans-serif;
+            font-weight: 600;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s ease;
+        }
+        .mobile-sub-nav a.active {
+            color: var(--primary);
+            border-bottom-color: var(--accent);
+            font-weight: 700;
+        }
+
+        /* דסקטופ ותפריט צד רספונסיבי */
+        aside {
+            width: var(--sidebar-width);
+            background: var(--primary);
+            color: white;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            z-index: 1020;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: -10px 0 30px rgba(0,0,0,0.05);
+        }
+
+        .sidebar-header {
+            padding: 50px 30px 40px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .sidebar-logo svg {
+            width: 120px;
+            height: auto;
+            margin-bottom: 24px;
+        }
+
+        .sidebar-header h1 {
+            font-family: 'Heebo', sans-serif;
+            font-size: 22px;
+            font-weight: 800;
+            color: white;
+            line-height: 1.2;
+        }
+
+        nav {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px 0;
+        }
+        nav::-webkit-scrollbar { width: 5px; }
+        nav::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+
+        nav ul { list-style: none; }
+
+        nav a {
+            display: flex;
+            align-items: center;
+            padding: 14px 32px;
+            color: rgba(255, 255, 255, 0.65);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.25s ease;
+            border-right: 4px solid transparent;
+            font-family: 'Heebo', sans-serif;
+        }
+
+        nav a i {
+            margin-left: 14px;
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
+            display: inline-block;
+        }
+
+        nav a:hover {
+            color: white;
+            background: rgba(255,255,255,0.03);
+        }
+
+        nav li.active a {
+            color: white;
+            background: rgba(120, 221, 181, 0.12);
+            font-weight: 700;
+            border-right-color: var(--accent);
+        }
+        nav li.active a i { color: var(--accent); }
+
+        /* מסך ערפל במובייל */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 28, 47, 0.4);
+            backdrop-filter: blur(4px);
+            z-index: 1015;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .sidebar-overlay.show {
+            display: block;
+            opacity: 1;
+        }
+
+        /* מכולת התוכן המרכזית */
+        .main-container {
+            flex: 1;
+            margin-right: var(--sidebar-width);
+            padding: 60px 80px;
+            max-width: 1200px;
+        }
+
+        main {
+            display: flex;
+            flex-direction: column;
+            gap: 50px;
+        }
+
+        /* כרטיסי הנושאים */
+        section {
+            background: var(--card-bg);
+            border-radius: 24px;
+            box-shadow: 0 4px 30px rgba(148, 163, 184, 0.05);
+            padding: 60px;
+            border: 1px solid rgba(226, 232, 240, 0.7);
+            scroll-margin-top: 30px;
+            transition: box-shadow 0.3s ease;
+        }
+        section:hover {
+            box-shadow: 0 10px 40px rgba(148, 163, 184, 0.1);
+        }
+
+        h2 {
+            font-family: 'Heebo', sans-serif;
+            color: var(--primary);
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 32px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--accent);
+            position: relative;
+        }
+
+        h3 {
+            font-family: 'Heebo', sans-serif;
+            color: var(--primary);
+            font-size: 20px;
+            margin: 40px 0 18px 0;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+        }
+        h3::before {
+            content: '◆';
+            color: var(--accent);
+            font-size: 12px;
+            margin-left: 12px;
+        }
+
+        h4 {
+            font-family: 'Heebo', sans-serif;
+            color: var(--primary);
+            font-size: 17px;
+            margin: 28px 0 14px 0;
+            font-weight: 700;
+        }
+
+        p {
+            margin-bottom: 18px;
+            color: var(--primary-light);
+            font-size: 16.5px;
+            text-align: justify;
+        }
+
+        strong {
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        ol, ul {
+            margin: 18px 32px 28px 0;
+        }
+
+        li {
+            margin-bottom: 12px;
+            font-size: 16.5px;
+            color: var(--primary-light);
+        }
+
+        main a {
+            color: var(--primary);
+            text-decoration: none;
+            border-bottom: 2px solid var(--accent);
+            font-weight: 700;
+            transition: all 0.2s;
+            padding-bottom: 2px;
+        }
+        main a:hover {
+            background: var(--note-bg);
+            color: var(--accent-dark);
+        }
+
+        /* עיצוב תיבות המידע והדגשים */
+        .why-box, .note, .important {
+            margin: 32px 0;
+            padding: 24px 28px;
+            border-radius: 16px;
+            border-right: 5px solid;
+            background: #FFFFFF;
+        }
+
+        .box-title {
+            font-family: 'Heebo', sans-serif;
+            font-weight: 800;
+            font-size: 16px;
+            margin-bottom: 12px;
+            display: flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+        }
+        
+        .box-title i {
+            display: inline-block !important;
+            font-size: 16px !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+
+        .why-box { border-right-color: var(--why-border); background: var(--why-bg); }
+        .why-box .box-title { color: var(--why-border); }
+        .why-box p { color: var(--why-text); margin-bottom: 0; font-size: 16px; font-weight: 500; }
+
+        .note { border-right-color: var(--note-border); background: var(--note-bg); }
+        .note .box-title { color: var(--accent-dark); }
+        .note p { color: var(--note-text); margin-bottom: 0; font-size: 16px; font-weight: 500; }
+
+        .important { border-right-color: var(--important-border); background: var(--important-bg); }
+        .important .box-title { color: var(--important-border); }
+        .important p { color: var(--important-text); margin-bottom: 0; font-size: 16px; font-weight: 500; }
+
+        /* קוד בתוך הטקסט */
+        .code {
+            background: #F1F5F9;
+            padding: 3px 10px;
+            border-radius: 8px;
+            font-family: 'Consolas', monospace;
+            color: #E06768;
+            font-weight: 700;
+            font-size: 15px;
+            border: 1px solid #E2E8F0;
+            display: inline-block;
+            direction: ltr;
+            margin: 0 4px;
+        }
+
+        /* טבלאות */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+        }
+
+        th {
+            background: var(--primary);
+            color: white;
+            padding: 18px 24px;
+            text-align: right;
+            font-family: 'Heebo', sans-serif;
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        td {
+            padding: 18px 24px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 16px;
+            color: var(--primary);
+        }
+
+        tr:last-child td { border-bottom: none; }
+        tr:hover { background: #F8FAFC; }
+
+        /* כפתור העתקה מהירה */
+        .copy-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 700;
+            font-family: 'Heebo', sans-serif;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .copy-btn:hover {
+            background: var(--accent);
+            color: var(--primary);
+        }
+        .table-code-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* פוטר */
+        footer {
+            margin-top: 30px;
+            padding-top: 40px;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .footer-logo { 
+            margin-bottom: 24px; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        /* הקטנת רוחב הלוגו בפוטר ב-20 אחוזים מדויקים (מ-220px ל-176px) */
+        .footer-logo svg { 
+            width: 176px; 
+            height: auto; 
+        }
+        
+        /* עיצוב צבעי הלוגו של הפוטר כדי שישמור על מבנה מושלם וזהה ללוגו העליון */
+        .footer-logo svg path[fill="white"] { 
+            fill: #FFFFFF !important; 
+        }
+        .footer-logo svg circle {
+            fill: none !important;
+            stroke: #FFFFFF !important;
+        }
+        .footer-logo svg path[fill="#78DDB5"] {
+            fill: #78DDB5 !important;
+        }
+
+        footer p {
+            font-size: 15px;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        /* כפתור למעלה צף */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            background: var(--primary);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            font-size: 18px;
+            box-shadow: 0 4px 20px rgba(10, 28, 47, 0.15);
+            z-index: 99;
+        }
+        .back-to-top.show { opacity: 1; visibility: visible; }
+        .back-to-top:hover {
+            background: var(--accent);
+            color: var(--primary);
+            transform: translateY(-4px);
+        }
+
+        /* התראת העתקה */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--primary);
+            color: white;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-size: 14.5px;
+            font-weight: 700;
+            font-family: 'Heebo', sans-serif;
+            box-shadow: 0 10px 30px rgba(10, 28, 47, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transform: translateY(40px);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 2000;
+        }
+        .toast.show { transform: translateY(0); opacity: 1; visibility: visible; }
+
+        /* חוקי רספונסיביות מלאים ומדויקים */
+        @media (max-width: 1150px) {
+            aside { transform: translateX(100%); }
+            aside.open { transform: translateX(0); }
+            .sidebar-overlay.show { display: block; }
+            
+            .mobile-header { display: flex; }
+            .mobile-sub-nav { display: flex; }
+            
+            .main-container {
+                margin-right: 0;
+                padding: 145px 20px 40px 20px;
+            }
+            section {
+                padding: 40px 24px;
+                border-radius: 20px;
+                scroll-margin-top: 135px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h2 { font-size: 24px; }
+            h3 { font-size: 18px; }
+            p, li { font-size: 16px; }
+            .why-box, .note, .important { padding: 18px 20px; }
+            table { display: block; overflow-x: auto; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- מובייל: סרגל עליון קבוע - מיושר אנכית במדויק עם לוגו מותג מלא וברור -->
+    <div class="mobile-header">
+        <div class="mobile-header-brand">
+            <div class="mobile-header-logo">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1508 1391" fill="none">
+                    <path d="M338.951 907.251V1183.71H29.41V954.307H0V880.782H313.217C329.392 880.782 338.951 891.076 338.951 907.251ZM244.839 954.307H123.522V1110.18H245.574V954.307H244.839ZM436.004 954.307H380.86V880.782H529.381V1067.54H436.004V954.307ZM733.045 999.893C733.045 966.071 719.811 954.307 690.401 954.307H571.29V880.782H740.398C796.277 880.782 827.157 905.781 827.157 967.542V1184.44H733.045V999.893ZM1311.69 880.782V1077.09C1311.69 1155.77 1283.01 1184.44 1199.19 1184.44H988.913C905.829 1184.44 876.419 1155.77 876.419 1077.09V880.782H1007.29V954.307H967.59V1069.74C967.59 1098.42 980.09 1110.18 1010.23 1110.18H1048.47V880.782H1138.17V1110.18H1177.14C1207.28 1110.18 1219.78 1098.42 1219.78 1069.74V954.307H1180.08V880.782H1311.69ZM1346.24 1110.18H1413.89V955.043H1358.01V880.782H1508V1158.71C1508 1174.88 1499.18 1183.71 1483 1183.71H1346.24V1110.18Z" fill="white"/>
+                    <path d="M119.986 1344.37H144.35V1371.01H119.986V1344.37ZM266.93 1302.49V1371.01H244.85V1308.58C244.85 1297.92 240.282 1293.35 230.384 1293.35H198.407V1371.01H160.339V1353.5H177.089V1293.35H164.145V1275.84H239.52 upgrade-C257.793 1275.08 266.93 1283.46 266.93 1302.49ZM335.452 1310.1C335.452 1297.92 330.884 1293.35 319.464 1293.35H279.111V1275.84H330.884C349.157 1275.84 358.293 1284.22 358.293 1303.25V1371.01H336.214V1310.1H335.452ZM483.918 1293.35H473.259V1371.01H451.18V1293.35H403.975V1371.01H381.896V1293.35H371.998V1275.84H477.827C481.634 1275.84 483.918 1278.13 483.918 1281.93V1293.35ZM581.373 1330.66C585.941 1338.28 590.509 1345.89 593.555 1352.74H608.782V1370.25H578.327C570.714 1346.65 552.441 1323.81 534.93 1304.78L529.6 1370.25H496.862V1352.74H509.043L515.134 1292.59H497.623V1275.08H532.646C542.543 1283.46 554.725 1295.64 565.384 1308.58L576.805 1275.08H602.691C606.498 1275.08 608.782 1277.37 608.782 1281.17V1292.59H595.077L581.373 1330.66ZM674.259 1371.01H664.362V1344.37H688.725V1366.45C688.725 1377.1 686.441 1384.72 684.918 1390.05H671.975C673.498 1383.96 674.259 1376.34 674.259 1371.01ZM802.93 1281.93V1371.01H707.759V1293.35H697.862V1275.84H795.316C799.884 1275.08 802.93 1278.13 802.93 1281.93ZM780.089 1293.35H729.839V1353.5H780.089V1293.35H837.953 1293.35H818.157V1275.84H860.032V1333.71H837.953V1293.35ZM932.362 1310.1C932.362 1297.92 927.794 1293.35 916.373 1293.35H876.021V1275.84H927.032C945.305 1275.84 954.441 1284.22 954.441 1303.25V1371.01H932.362V1310.1ZM1042.76 1371.01H1021.44C1021.44 1353.5 1017.63 1345.89 1013.07 1341.32L994.794 1371.01H968.146V1353.5H981.089L1000.12 1323.05V1293.35H978.044V1275.84H1021.44V1321.53C1032.86 1326.85 1042 1339.8 1042.76 1371.01ZM1147.07 1353.5V1371.01H1053.42V1353.5H1112.04V1293.35H1053.42V1275.84H1134.12V1353.5H1147.07ZM1263.56 1302.49V1371.01H1241.48V1308.58C1241.48 1297.92 1236.91 1293.35 1227.01 1293.35H1195.03V1371.01H1156.96V1353.5H1173.71V1293.35H1160.77V1275.84H1236.15C1255.18 1275.08 1263.56 1283.46 1263.56 1302.49ZM1387.66 1309.34V1371.01H1333.6V1353.5H1365.58V1313.91C1365.58 1297.92 1357.96 1292.59 1347.31 1292.59C1336.65 1292.59 1324.46 1297.16 1313.04 1307.06V1371.78H1290.96V1293.35H1278.02V1275.84H1312.28V1288.03C1326.75 1278.89 1339.69 1274.32 1354.16 1274.32C1372.43 1273.56 1387.66 1283.46 1387.66 1309.34Z" fill="white"/>
+                    <path d="M754.309 586.183C754.309 586.183 793.033 461.258 874.914 435.387C956.795 409.516 1215.04 349.151 1339.84 215.835C1464.64 82.2861 1434.55 30.5445 1477.47 0.478516C1477.47 0.478516 935.1 103.729 857.651 224.459C780.203 344.956 754.309 370.827 754.309 370.827V586.183Z" fill="#78DDB5"/>
+                    <circle cx="752.802" cy="386.54" r="341.529" fill="none" stroke="white" stroke-width="45"/>
+                    <path d="M754.311 586.183C754.311 586.183 715.636 461.258 633.861 435.387C552.085 409.516 293.712 349.151 168.835 215.835C43.9584 82.2861 74.2456 30.5445 31.1445 0.478516C31.1445 0.478516 573.519 103.729 651.101 224.459C728.683 344.956 754.311 370.827 754.311 370.827V586.183Z" fill="#78DDB5"/>
+                </svg>
+            </div>
+            <h1>נהלים ודגשים למטפל/ת</h1>
+        </div>
+        <button class="menu-toggle" id="menuToggle" aria-label="פתח תפריט מלא">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+    </div>
+
+    <!-- מובייל: סרגל ניווט פרקים צף ואינטראקטיבי -->
+    <div class="mobile-sub-nav" id="mobileSubNav">
+        <a href="#physical" class="active">התנהלות פיזית</a>
+        <a href="#coordination">לו״ז ותיאום</a>
+        <a href="#work">עבודה שוטפת</a>
+        <a href="#billing">גבייה</a>
+        <a href="#external">הורים וגורמים</a>
+        <a href="#closure">שינויים בטיפול</a>
+        <a href="#supervision">הדרכות</a>
+        <a href="#office">שימוש במשרד</a>
+        <a href="#emergencies">תקלות וחירום</a>
+        <a href="#codes">קודים</a>
+    </div>
+
+    <!-- מסך ערפל במובייל -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="app-layout">
+        <!-- תפריט צד (דסקטופ) -->
+        <aside id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1508 1391" fill="none">
+                        <path d="M338.951 907.251V1183.71H29.41V954.307H0V880.782H313.217C329.392 880.782 338.951 891.076 338.951 907.251ZM244.839 954.307H123.522V1110.18H245.574V954.307H244.839ZM436.004 954.307H380.86V880.782H529.381V1067.54H436.004V954.307ZM733.045 999.893C733.045 966.071 719.811 954.307 690.401 954.307H571.29V880.782H740.398C796.277 880.782 827.157 905.781 827.157 967.542V1184.44H733.045V999.893ZM1311.69 880.782V1077.09C1311.69 1155.77 1283.01 1184.44 1199.19 1184.44H988.913C905.829 1184.44 876.419 1155.77 876.419 1077.09V880.782H1007.29V954.307H967.59V1069.74C967.59 1098.42 980.09 1110.18 1010.23 1110.18H1048.47V880.782H1138.17V1110.18H1177.14C1207.28 1110.18 1219.78 1098.42 1219.78 1069.74V954.307H1180.08V880.782H1311.69ZM1346.24 1110.18H1413.89V955.043H1358.01V880.782H1508V1158.71C1508 1174.88 1499.18 1183.71 1483 1183.71H1346.24V1110.18Z" fill="white"/>
+                        <path d="M119.986 1344.37H144.35V1371.01H119.986V1344.37ZM266.93 1302.49V1371.01H244.85V1308.58C244.85 1297.92 240.282 1293.35 230.384 1293.35H198.407V1371.01H160.339V1353.5H177.089V1293.35H164.145V1275.84H239.52C257.793 1275.08 266.93 1283.46 266.93 1302.49ZM335.452 1310.1C335.452 1297.92 330.884 1293.35 319.464 1293.35H279.111V1275.84H330.884C349.157 1275.84 358.293 1284.22 358.293 1303.25V1371.01H336.214V1310.1H335.452ZM483.918 1293.35H473.259V1371.01H451.18V1293.35H403.975V1371.01H381.896V1293.35H371.998V1275.84H477.827C481.634 1275.84 483.918 1278.13 483.918 1281.93V1293.35ZM581.373 1330.66C585.941 1338.28 590.509 1345.89 593.555 1352.74H608.782V1370.25H578.327C570.714 1346.65 552.441 1323.81 534.93 1304.78L529.6 1370.25H496.862V1352.74H509.043L515.134 1292.59H497.623V1275.08H532.646C542.543 1283.46 554.725 1295.64 565.384 1308.58L576.805 1275.08H602.691C606.498 1275.08 608.782 1277.37 608.782 1281.17V1292.59H595.077L581.373 1330.66ZM674.259 1371.01H664.362V1344.37H688.725V1366.45C688.725 1377.1 686.441 1384.72 684.918 1390.05H671.975C673.498 1383.96 674.259 1376.34 674.259 1371.01ZM802.93 1281.93V1371.01H707.759V1293.35H697.862V1275.84H795.316C799.884 1275.08 802.93 1278.13 802.93 1281.93ZM780.089 1293.35H729.839V1353.5H780.089V1293.35H837.953 1293.35H818.157V1275.84H860.032V1333.71H837.953V1293.35ZM932.362 1310.1C932.362 1297.92 927.794 1293.35 916.373 1293.35H876.021V1275.84H927.032C945.305 1275.84 954.441 1284.22 954.441 1303.25V1371.01H932.362V1310.1ZM1042.76 1371.01H1021.44C1021.44 1353.5 1017.63 1345.89 1013.07 1341.32L994.794 1371.01H968.146V1353.5H981.089L1000.12 1323.05V1293.35H978.044V1275.84H1021.44V1321.53C1032.86 1326.85 1042 1339.8 1042.76 1371.01ZM1147.07 1353.5V1371.01H1053.42V1353.5H1112.04V1293.35H1053.42V1275.84H1134.12V1353.5H1147.07ZM1263.56 1302.49V1371.01H1241.48V1308.58C1241.48 1297.92 1236.91 1293.35 1227.01 1293.35H1195.03V1371.01H1156.96V1353.5H1173.71V1293.35H1160.77V1275.84H1236.15C1255.18 1275.08 1263.56 1283.46 1263.56 1302.49ZM1387.66 1309.34V1371.01H1333.6V1353.5H1365.58V1313.91C1365.58 1297.92 1357.96 1292.59 1347.31 1292.59C1336.65 1292.59 1324.46 1297.16 1313.04 1307.06V1371.78H1290.96V1293.35H1278.02V1275.84H1312.28V1288.03C1326.75 1278.89 1339.69 1274.32 1354.16 1274.32C1372.43 1273.56 1387.66 1283.46 1387.66 1309.34Z" fill="white"/>
+                        <path d="M754.309 586.183C754.309 586.183 793.033 461.258 874.914 435.387C956.795 409.516 1215.04 349.151 1339.84 215.835C1464.64 82.2861 1434.55 30.5445 1477.47 0.478516C1477.47 0.478516 935.1 103.729 857.651 224.459C780.203 344.956 754.309 370.827 754.309 370.827V586.183Z" fill="#79DEB6"/>
+                        <circle cx="752.802" cy="386.54" r="341.529" fill="none" stroke="white" stroke-width="31.1433"/>
+                        <path d="M754.311 586.183C754.311 586.183 715.636 461.258 633.861 435.387C552.085 409.516 293.712 349.151 168.835 215.835C43.9584 82.2861 74.2456 30.5445 31.1445 0.478516C31.1445 0.478516 573.519 103.729 651.101 224.459C728.683 344.956 754.311 370.827 754.311 370.827V586.183Z" fill="#79DEB6"/>
+                    </svg>
+                </div>
+                <h1>נהלים ודגשים למטפל/ת</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li class="active"><a href="#physical"><i class="fa-solid fa-building"></i>התנהלות פיזית</a></li>
+                    <li><a href="#coordination"><i class="fa-solid fa-calendar-days"></i>לו״ז ותיאום</a></li>
+                    <li><a href="#work"><i class="fa-solid fa-briefcase"></i>עבודה שוטפת</a></li>
+                    <li><a href="#billing"><i class="fa-solid fa-credit-card"></i>גבייה</a></li>
+                    <li><a href="#external"><i class="fa-solid fa-users"></i>הורים וגורמים</a></li>
+                    <li><a href="#closure"><i class="fa-solid fa-arrows-rotate"></i>שינויים בטיפול</a></li>
+                    <li><a href="#supervision"><i class="fa-solid fa-graduation-cap"></i>הדרכות</a></li>
+                    <li><a href="#office"><i class="fa-solid fa-laptop-file"></i>שימוש במשרד</a></li>
+                    <li><a href="#emergencies"><i class="fa-solid fa-triangle-exclamation"></i>תקלות וחירום</a></li>
+                    <li><a href="#codes"><i class="fa-solid fa-key"></i>קודים</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- אזור התוכן המרכזי -->
+        <div class="main-container">
+            <main>
+                <!-- 1. התנהלות פיזית במקום -->
+                <section id="physical">
+                    <h2>1. התנהלות פיזית במקום</h2>
+
+                    <h3>כניסה למרכז</h3>
+                    <p>קוד הכניסה לדלת: <span class="code">2121</span></p>
+
+                    <h3>חניה בבניין</h3>
+                    <p>קיים חניון תת-קרקעי. הכניסה אליו מרחוב יפו, בשילוט לאורחי מלון "ליידי שטרן" – ממש לפני הכניסה לבניין, אחרי שדרת החנויות הצמודה. <br><br><strong>הכניסה לחניון כוללת שני שלבים:</strong></p>
+                    
+                    <p><strong>שלב א׳ – טלפון:</strong> פותח את השער הראשי.</p>
+                    <p><strong>שלב ב׳ – צ׳יפ:</strong> פותח את השער הפנימי המיועד למנויים. לאחר השער הראשי, יש להמשיך עד הסוף, לפנות ימינה אחרי העיקול לכיוון קומה 2-.</p>
+                    
+                    <div class="note">
+                        <div class="box-title"><i class="fa-solid fa-lightbulb"></i> זכור:</div>
+                        <p>צ׳יפ ניתן לקבל ממני. <br><br>אם הצ׳יפ אבד או נשבר – ניתן לפנות אלי לקבלת חדש ללא שום בעיה.</p>
+                    </div>
+
+                    <h3>פינת קפה</h3>
+                    <p>פינת הקפה מתוחזקת ועומדת לרשותכם. <br><br>אם חסר משהו – ניתן להשלים מהארון שמתחת לפינה או מהמחסן.</p>
+                    <p>מחסן נמצא בקצה המסדרון של ארונות החשמל. ביציאה מהמרכז – שמאלה ושמאלה. <br><br>קוד דלת המחסן: <span class="code">131313#</span></p>
+                    <p>המקרר פתוח לשימוש חופשי. אם השארתם משהו למשך זמן ממושך – <strong>אנא פנו אותו בבוא העת.</strong> <br><br>אם חסר משהו שלא מצאתם – שילחו הודעה ונדאג להשלים.</p>
+
+                    <h3>ציוד ואבזור החדר</h3>
+                    <p>אם חסר לך ציוד, הכיסא לא נוח, אין משחקים שאתה רגיל לעבוד איתם, או כל דבר אחר שמפריע לעבודה השוטפת – חשוב שתדווח. <br><br>לא נוכל לשפר את מה שלא נדע שחסר.</p>
+
+                    <h3>ניקיון החדר</h3>
+                    <p>בסיום כל פגישה יש להשאיר את החדר מסודר למטפל הבא, שעשוי להגיע כמה דקות אחריך. <br><br><strong>זה כולל מחיקת הלוח ופינוי כוסות שנותרו.</strong> <br><br>אם נשפך משהו או שהמקום התלכלך – יש במקום מנקות כמעט בכל שעות היום. שלחו לי הודעה ואני אעביר לאחראי הבניין שידאג לטיפול מיידי.</p>
+
+                    <h3>יציאה מהמרכז</h3>
+                    <p>דלת היציאה ננעלת אוטומטית ונפתחת עם קוד. תמיד ביציאתך מהמקום תסגור את הדלת ותוודא שהיא נטרקה וננעלה. לפעמים היא לא נטרקת עד הסוף וזה קצת בעייתי להשאיר את המקום פתוח.</p>
+                </section>
+
+                <div class="divider"></div>
+
+                <!-- 2. לו"ז ותיאום חדרים -->
+                <section id="coordination">
+                    <h2>2. לו"ז ותיאום חדרים</h2>
+
+                    <h3>קבוצת וואטסאפ – עדכוני פגישות</h3>
+                    <p>זהו הערוץ המרכזי להתנהלות מול המשרד. כאן מועברים עדכוני ביטולים, שינויי חדרים, הפניות וכל עדכון שוטף. <br><br>חברי הקבוצה: מירי, חזקי ואת/ה.</p>
+
+                    <h3>קביעת שעות ושינוי זמנים</h3>
+                    <p>בתיאור קבוצת עדכוני הפגישות מופיע קישור למפת חדרים – זהו קובץ שמציג אילו חדרים פנויים בכל שעה. לפיו מאארגנים את הלו"ז ומשריינים חדר.</p>
+
+                    <div class="note">
+                        <div class="box-title"><i class="fa-solid fa-circle-info"></i> זכור:</div>
+                        <p><strong>כל שינוי – גם חד פעמי – חייב להיות מעודכן במפה, כדי למנוע כפילויות.</strong></p>
+                    </div>
+                </section>
+
+                <!-- 3. עבודה שוטפת -->
+                <section id="work">
+                    <h2>3. עבודה שוטפת</h2>
+
+                    <h3>אורך הפגישה</h3>
+                    <p><strong>כל פגישה היא 60 דקות מלאות.</strong> כמובן, אם נגמרו המילים אחרי 52 דקות – אפשר לסיים. תמיד עדיף לסיים מוקדם מאשר להפוך את הנוכחות למעיקה.</p>
+
+                    <div class="why-box">
+                        <div class="box-title"><i class="fa-solid fa-circle-question"></i> למה?</div>
+                        <p>כ-20 דקות ראשונות לרוב לוקחות למטופל לנחות, להתמקם ולשתף לפני שניתן לעבוד לעומק. כרבע שעה אחרונה מוקדשת בדרך כלל לאריזה ועטיפה. <br><br>בפגישות קצרות מ-60 דקות כמעט לא נותר זמן אפקטיבי לעבודה עמוקה.</p>
+                    </div>
+
+                    <h3>מרווח בין פגישות</h3>
+                    <p>יש להשאיר מרווח קטן בין פגישה לפגישה.</p>
+
+                    <div class="why-box">
+                        <div class="box-title"><i class="fa-solid fa-circle-question"></i> למה?</div>
+                        <p>מטופלים רבים תופסים את המרחב כאינטימי ולא מעוניינים להיתקל בזה שאחריהם. <strong>אצל בני נוער זה עשוי להיות ממש קריטי.</strong></p>
+                    </div>
+
+                    <h3>עדכון פגישות בטיפולוג</h3>
+                    <p>סיכומי הפגישות מתועדים במערכת טיפולוג. לפיהם מתנהלת גביית התשלום מהמטופלים ותשלומי השכר למטפלים. <strong>הפגישות חייבות להיות מעודכנות עד סוף השבוע בו התקיימו – לא בסוף החודש.</strong></p>
+
+                    <div class="why-box">
+                        <div class="box-title"><i class="fa-solid fa-circle-question"></i> למה?</div>
+                        <p><strong>גבייה:</strong> כשהורה פונה, המזכירה צריכה לדעת מהו החוב בכל רגע נתון.</p>
+                        <p style="margin-top: 12px;"><strong>התנהלות:</strong> בסוף החודש יש אופרציה של גבייה ומשימות רבות. חישובי שכר תלויים בתשלום, ולא נוכל לרדוף אחרי המספרים כדי לשלם את מה שמגיע לך לקבל.</p>
+                        <p style="margin-top: 12px;"><strong>מעורבות מקצועית:</strong> הורים פונים אלי לברר או לשמוע, ואני צריך להיות מעודכן.</p>
+                        <p style="margin-top: 12px;"><strong>חוקית:</strong> מעל הכול, מבחינה חוקית אנו מחויבים לניהול יומן רופא הממולא תוך פרק זמן סביר מהמפגש.</p>
+                    </div>
+
+                    <h3>אופן העדכון במערכת</h3>
+                    <p><a href="https://drive.google.com/file/d/1QN3_Dmgxm_bdOHYLRGsh4Vjs9LVNZiz1/view?usp=drivesdk" target="_blank">לחיצה על הקישור תוביל אותך לסרטון הסבר</a></p>
+
+                    <div class="note">
+                        <div class="box-title"><i class="fa-solid fa-feather"></i> זכור:</div>
+                        <p>המרכיב החשוב ביותר בעדכון: פסקה בשפה חופשית ובקצרה שמתארת את הלך הפגישה. <br><br>זה עונה על חובה חוקית של ניהול יומן, מאפשר מעקב שוטף בהדרכות ומהווה בסיס לגבייה ולשכר.</p>
+                    </div>
+
+                    <h3>חוזה טיפולי</h3>
+                    <p><strong>ככלל, בפגישה הראשונה נשתדל להימנע מכל אלמנט הקשור לחוזה טיפולי.</strong></p>
+
+                    <div class="why-box">
+                        <div class="box-title"><i class="fa-solid fa-circle-question"></i> למה?</div>
+                        <p>הכניסה לטיפול עבור מתבגרים רבים קשה, והם יגיעו לרוב כדי לטפל במשהו ספציפי שמפריעם להם, או בעקבות מוטיבציה שעלתה באינטייק. <br><br>ההכרה בכך שזהו הליך ממושך הופך את זה למורכב יותר.</p>
+                        <p style="margin-top: 12px;">בשני המקרים, מחויבות, ביסוס קשר טיפולי או הכרה בכניסה לתהליך ממושך, כל אלה מאיימים.</p>
+                    </div>
+
+                    <p>החוזה הטיפולי מבסס את גבולות הגזרה של הקשר, וזהחשוב.</p>
+                    <p>הבעיה היא, שבשלב הראשוני המטרה המרכזית היא שהמתבגר יראה בנו כתובת.</p>
+                    <p>זה יקרה רק אם ירגיש שרואים אותו בגובה העיניים, שהוא מוערך ושזהותו מתוקפת.</p>
+
+                    <div class="important">
+                        <div class="box-title"><i class="fa-solid fa-triangle-exclamation"></i> חשוב</div>
+                        <p>כמובן שיש חריגים, ויש מקום רב לאינטליגנציה הרגשית ולהתאמה לסיטואציה. מטופל ששואל מה אורך הפגישה צריך לקבל תשובה. מטופל שמעלה את האפשרות לבוא מדי פעם, או שמבקש שלא לקבוע מראש את הפגישה הבאה, צריך לפגוש גבולות ברורים.</p>
+                    </div>
+
+                    <h3>ביטולי פגישות</h3>
+                    <p>ביטול פחות מ-24 שעות לפני הפגישה, ללא סיבה חריגה ומוצדקת - יחויב בתשלום מלא.</p>
+                    <p>סיבה חריגה ומוצדקת מוגדרת כדבר שלא ניתן היה לדעת אותו מראש: תאונה, מחלה פתאומית, הפגנה בהפתעה וכדומה.</p>
+                    
+                    <h3>ביטולים חריגים חוזרים</h3>
+                    <p>כל מקרה יידון לגופו. לרוב, אם הביטולים חוזרים, נעדכן את המטופל שביטול חריג יחויב בתשלום כדי לשמור לו את השעה. הזמן שלנו יקר, וביטולים שיש להם מחיר הופכים לנדירים יותר.</p>
+                    
+                    <div class="note">
+                        <div class="box-title"><i class="fa-solid fa-lightbulb"></i> זכור:</div>
+                        <p>מאותן סיבות שבגללן לא נדון עם מטופל בפגישה הראשונה על כללים וחוזה טיפולי, לא נדון איתו מראש גם בנושא ביטולים ותשלומים. <br><br>בפעם הראשונה שיתרחש ביטול נספוג אותו ללא עלות, <strong>ונשתמש בהזדמנות כדי להודיע על הנוהל באופן אמפתי:</strong> "הפעם לא יגבה תשלום. בפעם הבאה זה יהיה בתשלום."</p>
+                    </div>
+
+                    <div class="important">
+                        <div class="box-title"><i class="fa-solid fa-triangle-exclamation"></i> חשוב</div>
+                        <p>אל תדבר עם מתבגר על תשלומים, גביות, ביטולים וכו׳, מבלי לוודא או לבדוק מי עומד מאחורי התשלום ועד כמה זה נפיץ.</p>
+                    </div>
+
+                    <div class="why-box">
+                        <div class="box-title"><i class="fa-solid fa-circle-question"></i> למה?</div>
+                        <p>מתבגרים רבים מדחיקים את העובדה שהזמן הזה משולם, ומקבלים רגליים קרות כשהם מתאמתים עם זה. <strong>רגישות כזו עשויה לחסוך הרבה כאבי ראש.</strong></p>
+                    </div>
+
+                    <h3>אי הסכמה על ביטול</h3>
+                    <p>אם מטופל טוען שביטל והמטפל לא הבין כך – לא ננהל מאבק על התשלום. זה מוריד את הכבוד שלנו, ושלו. <br><br><strong>אם זה יחזור על עצמו – נחדד נהלים ולא נאפשר לזה להימשך.</strong></p>
+
+                    <div class="note">
+                        <div class="box-title"><i class="fa-solid fa-hand-holding-dollar"></i> זכור:</div>
+                        <p>למעט חריגים, פגישה שבוטלה ולא שולמה – לא יועבר עבורה תשלום למטפל.</p>
+                    </div>
+
+                    <div class="important">
+                        <div class="box-title"><i class="fa-solid fa-triangle-exclamation"></i> חשוב:</div>
+                        <p>גם אם ביטול הוא ברגע האחרון וללא הצדקה, אם אתה מרגיש שגביית תשלום אינה נכונה במקרה זה, שמורה לך הזכות המלאה לוותר עליו. <strong>אתה איש המקצוע, וההחלטה היא שלך.</strong> <br><br>אנו רוצים להבטיח שפספוס פגישה לא יערער קשר שאנו בונים, או ישאיר בו טעם רע.</p>
+                    </div>
+                </section>
+
+                <!-- 4. גבייה -->
+                <section id="billing">
+                    <h2>4. גבייה</h2>
+                    <p><strong>הגבייה מתנהלת על ידי המשרד בלבד.</strong> אינך צריך להתעסק בה. <br><br>כל שאלה של מטופל בנושא – חוב, חשבונית, תשלום באשראי, דחיית תשלום, או פריסה לתשלומים – יש להפנות למזכירות.</p>
+
+                    <h3>תשלום במזומן</h3>
+                    <p>אם מטופל מעוניין לשלם במזומן, יש להכניס את הכסף למעטפה שנמצאת בארון מתחת לפינת קפה, למלא את הפרטים על גב המעטפה, ולהכניס לכספת. קוד הכספת: <span class="code">1313B</span></p>
+
+                    <div class="note">
+                        <div class="box-title"><i class="fa-solid fa-clipboard-check"></i> זכור:</div>
+                        <p>יש לעדכן בסיכום הפגישה בטיפולוג שהפגישה שולמה.</p>
+                    </div>
+                </section>
+
+                <!-- 5. הורים וגורמים חיצוניים -->
+                <section id="external">
+                    <h2>5. הורים וגורמים חיצוניים</h2>
+
+                    <h3>שיחות עם הורים</h3>
+                    <p>הורים שמתקשרים הם חלק מהמציאות. הציפיות שלהם עשויות להשפיע על הלך הטיפול, ולכן חשוב לנהל את השיחות בתשומת לב.</p>
+                    <p><strong>מצד אחד:</strong> אנו מחויבים לנאמנות עם המטופל. מעבר לסודיות ולאנונימיות. נער שמגלה שהמרחב שלו מקבל אינפורמציה חיצונית יתחיל לבדוק אם אנו מושפעים ממנה.</p>
+                    <p><strong>מצד שני:</strong> הורה שנתקל בדלתות סגורות לחלוטין ירגיש מנוכר, וזה יהפוך את הטיפול למרתיע עבורו. <strong>גם אם הוא לא פועל כרגע מתוך אובייקטיביות מלאה – הוא שולח את ילדו לטיפול ורוצה להיטיב.</strong></p>
+
+                    <h3>הדרך הנכונה</h3>
+                    <p>תמיד לענות, לשמוע, לתת לגיטימציה ולשחרר טיפה אשמה. אפשר לשתף בלי לשבור אנונימיות: "השיחות עמוקות, יש חיבור, הוא נראה מתמודד עם קשיים, הבנתי שבבית יש מתח" – אמרת הכל ולא אמרת כלום. <br><br>לעולם לא לשבור אנונימיות של מטופל. <strong>לעולם לא לקבוע שיחה או פגישה עם הורים בלי לעדכן ולהתייעץ מראש.</strong> <br><br>תמיד אפשר – ועדיף – להפנות לקביעת שיחה טלפונית עם חזקי דרך המזכירה.</p>
+                    
+                    <div class="note">
+                        <div class="box-title"><i class="fa-solid fa-heart"></i> זכור:</div>
+                        <p>מה שההורה זוכר מהשיחה הוא לא מה שאמרת – אלא מה שגרמת לו להרגיש. אם ירגיש בטוח ומכובד, יתן לך לעבוד. אם ירגיש מנוכר – לא יפסיק לוודא שהתפיסה שלו מובאת.</p>
+                    </div>
+
+                    <h3>הפניה לגורמים חיצוניים</h3>
+                    <p>גורמים חיצוניים כוללים: אנשי מקצוע נוספים, פסיכיאטר, צוות ישיבה וכל גורם אחר מחוץ למרכז.</p>
+
+                    <div class="important">
+                        <div class="box-title"><i class="fa-solid fa-shield-halved"></i> חשוב</div>
+                        <p>אין דבר כזה להפנות, להמליץ, לכוון או להעלות רעיון כזה – בלי להתייעץ לפני כן. גם אם ברור לך שזה נכון – זה יחכה לפגישה הבאה. כל מקרה ידון לגופו כשיהיה רלוונטי.</p>
+                    </div>
+
+                    <div class="note">
+                        <div class="box-title"><i class="fa-solid fa-triangle-exclamation"></i> זכור:</div>
+                        <p>לא לשלוח לגורם חיצוני ולא להוציא משם. לא להמליץ בשלוף תוך כדי פגישה על שינוי תרופתי, החלפת פסיכיאטר, או כל התערבות אחרת.</p>
+                    </div>
+
+                    <div class="why-box">
+                        <div class="box-title"><i class="fa-solid fa-circle-question"></i> למה?</div>
+                        <p>על מנת למנוע פיצולים וחוסר אמינות. התפיסה שלנו כמערכת חייבת להיות מתואמת, ופעמים רבות ההורים או הסביבה שמעו ממני ורסיה אחרת וחשוב שנהיה מתואמים.</p>
+                    </div>
+                </section>
+
+                <!-- 6. שינויים בטיפול -->
+                <section id="closure">
+                    <h2>6. שינויים בטיפול</h2>
+                    <p>החלטה על סיום טיפול, המלצה למטופל להתכוונן לסיום, הפניה לסוג טיפול אחר, או כל שינוי מהותי בהמשך הדרך – <strong>לא יכולים לקרות בלי התייעצות מוקדמת.</strong></p>
+                    
+                    <div class="why-box">
+                        <div class="box-title"><i class="fa-solid fa-circle-question"></i> למה?</div>
+                        <p>Aנו פועלים כמערכת עם אג'נדה ברורה, ועלינו להיות מתואמים.<br>אתה בטוח שאתה יודע מה נכון, וכנראה שאתה צודק.<br>אבל אנחנו חייבים להיות מסונכרנים, וזה בטוח יכול לחכות לשבוע הבא.</p>
+                    </div>
+                    
+                    <div class="important">
+                        <div class="box-title"><i class="fa-solid fa-triangle-exclamation"></i> חשוב</div>
+                        <p>כמובן שזה בסדר - אם מטופל מכריז על סיום, ואתה מבין שהדבר הנכון יהיה לסכם איתו את התהליך במקום למשוך אותו להמשך.<br>אנחנו לא עובדים בתנאי מעבדה.</p>
+                    </div>
+                </section>
+
+                <!-- 7. הדרכות -->
+                <section id="supervision">
+                    <h2>7. הדרכות</h2>
+                    <p>הזמן של ההדרכות יקר, גם אם אינך נדרש לשלם עליו.</p>
+                    
+                    <h3>ביטול הדרכה</h3>
+                    <p>ביטול הדרכה בהתראה קצרה מ-24 שעות משאיר שעה ריקה ביומן אצל חזקי.<br>זה נחמד לפעמים, אבל יש לא מעט שמבקשים אותה.<br>אם זה קרה באופן חד פעמי – זה בסדר, אנחנו בני אדם.<br>רק חשוב להחזיק את זה בראש.<br>במקרה של ביטול יש לדווח למזכירה או ישירות לחזקי בפרטי.</p>
+                    
+                    <div class="important">
+                        <div class="box-title"><i class="fa-solid fa-triangle-exclamation"></i> חשוב</div>
+                        <p>אם הדבר יקרה בצורה תכופה ולא סבירה, השעה בה החסרת תחויב בעלות שאת/ה מתוגמל עבור פגישה שלך במרכז.</p>
+                    </div>
+                    
+                    <h3>העברת הדרכה לזום</h3>
+                    <p>מעבר להדרכה בזום אפשרי לגמרי, אבל רצוי להודיע מראש ולא ברגע האחרון.</p>
+                    
+                    <div class="why-box">
+                        <div class="box-title"><i class="fa-solid fa-circle-question"></i> למה?</div>
+                        <p>יצא לי להגיע במיוחד לירושלים ולגלות שהפגישה עברה לזום.<br>יצא לי גם להיתקע בלי אינטרנט ולא ערוך לפגישה כזאת.</p>
+                    </div>
+                    
+                    <div class="note">
+                        <div class="box-title"><i class="fa-solid fa-circle-nodes"></i> זכור:</div>
+                        <p>כמובן שיש חריגים, וזה עדיף על כלום.<br>אבל באותה מידה, לא אאפשר למטופל 'לזרום' לפגישה בזום בצורה ספונטנית.<br>מפגש מצריך התכווננות, והשעה הזו מספיק חשובה בשביל שנהיה מאורגנים לקראתה.</p>
+                    </div>
+                </section>
+
+                <!-- 8. שימוש במשרד לצרכים נוספים -->
+                <section id="office">
+                    <h2>8. שימוש במשרד לצרכים נוספים</h2>
+                    <p>אם יש לך שעות פנויות בין פגישות או שעות משוריינות – אתה בהחלט יכול להשתמש במרכז לצרכיך.<br>כל עוד יש חדרים פנויים במפת החדרים – המקום לרשותך.</p>
+                    
+                    <h3>קבלת מטופלים פרטיים במקום</h3>
+                    <p><strong>פגישה חד-פעמית:</strong> בשמחה, ללא כל בעיה.</p>
+                    <p><strong>פגישות קבועות:</strong> ניתן, בעלות של 50 ש"ח לפגישה. <br><br>חובה לעדכן את המזכירות במספר השעות החודשית, ולתאם מול המזכירות וחזקי במידה ונקבעות שעות פרטניות פרטיות קבועות.</p>
+                    
+                    <div class="important">
+                        <div class="box-title"><i class="fa-solid fa-lock"></i> חשוב</div>
+                        <p>השימוש לפגישות פרטיות הוא על בסיס מקום פנוי בלבד.<br>הקדימות תהיה תמיד למטופלי המרכז.<br>שמורה למרכז נשרים הזכות לבקש ממך לפנות את השעות שנתפסו על ידך, אם יווצר הרושם שיש עומס והמקום נצרך לטובת המרכז.<br>שים לב שאין התחייבות לזמינות, לקביעות, או לשמירת המחיר לאורך זמן.<br>לגבי כל האמור כאן שמורה לנו הזכות לשינוי.</p>
+                    </div>
+                </section>
+
+                <!-- 9. תקלות ומצבי חירום -->
+                <section id="emergencies">
+                    <h2>9. תקלות ומצבי חירום</h2>
+                    
+                    <h3>הפסקת חשמל</h3>
+                    <p>לוח החשמל נמצא במסדרון של המחסן, בדלת השנייה. השטח השייך לנו מסומן בתווית "נשרים".</p>
+                    
+                    <div class="important">
+                        <div class="box-title"><i class="fa-solid fa-phone-volume"></i> חשוב</div>
+                        <p>אם החשמל אינו עולה, מקצר שוב ושוב, או שאתה נתקל בתקלה מפתיעה, פנה לחזקי.<br><br>אם אני לא זמין, ובכל מקרה - ניתן לפנות לשומר בכניסה שיקרא לסרגיי, האחראי על האחזקה.<br>הוא בדרך כלל נוכח במקום ומגיע מהר.</p>
+                    </div>
+                    
+                    <h3>השתקת אזעקת כיבוי אש</h3>
+                    <p>אם נדלקה האזעקה:</p>
+                    <ol>
+                        <li>לחץ 1 (השב)</li>
+                        <li>לחץ 4 (בחר)</li>
+                        <li>לחץ 1 (השב)</li>
+                    </ol>
+                    
+                    <div class="note">
+                        <div class="box-title"><i class="fa-solid fa-repeat"></i> זכור:</div>
+                        <p>לפעמים צריך לעשות את זה מספר פעמים.<br>אל תתייאש.</p>
+                    </div>
+                </section>
+
+                <!-- 10. רשימת קודים -->
+                <section id="codes">
+                    <h2>10. רשימת קודים</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>שימוש</th>
+                                <th>קוד</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>וויפי (Wi-Fi)</td>
+                                <td>
+                                    <div class="table-code-container">
+                                        <span class="code" id="code-wifi">0537661500</span>
+                                        <button class="copy-btn" onclick="copyCode('code-wifi')"><i class="fa-regular fa-copy"></i> העתק</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>דלת ראשית</td>
+                                <td>
+                                    <div class="table-code-container">
+                                        <span class="code" id="code-door">2121</span>
+                                        <button class="copy-btn" onclick="copyCode('code-door')"><i class="fa-regular fa-copy"></i> העתק</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>כספת</td>
+                                <td>
+                                    <div class="table-code-container">
+                                        <span class="code" id="code-vault">1313B</span>
+                                        <button class="copy-btn" onclick="copyCode('code-vault')"><i class="fa-regular fa-copy"></i> העתק</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>מחשב</td>
+                                <td>
+                                    <div class="table-code-container">
+                                        <span class="code" id="code-pc">1414</span>
+                                        <button class="copy-btn" onclick="copyCode('code-pc')"><i class="fa-regular fa-copy"></i> העתק</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>מחסן</td>
+                                <td>
+                                    <div class="table-code-container">
+                                        <span class="code" id="code-storage">131313#</span>
+                                        <button class="copy-btn" onclick="copyCode('code-storage')"><i class="fa-regular fa-copy"></i> העתק</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <!-- פוטר משודרג ומעוצב לרמת המותג -->
+                <footer style="background-color: #0A1C2F; border-top: 5px solid #78DDB5; padding: 45px 60px; text-align: center; color: white;">
+                    <div class="footer-logo" style="margin-bottom: 20px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1508 1391" fill="none">
+                            <path d="M338.951 907.251V1183.71H29.41V954.307H0V880.782H313.217C329.392 880.782 338.951 891.076 338.951 907.251ZM244.839 954.307H123.522V1110.18H245.574V954.307H244.839ZM436.004 954.307H380.86V880.782H529.381V1067.54H436.004V954.307ZM733.045 999.893C733.045 966.071 719.811 954.307 690.401 954.307H571.29V880.782H740.398C796.277 880.782 827.157 905.781 827.157 967.542V1184.44H733.045V999.893ZM1311.69 880.782V1077.09C1311.69 1155.77 1283.01 1184.44 1199.19 1184.44H988.913C905.829 1184.44 876.419 1155.77 876.419 1077.09V880.782H1007.29V954.307H967.59V1069.74C967.59 1098.42 980.09 1110.18 1010.23 1110.18H1048.47V880.782H1138.17V1110.18H1177.14C1207.28 1110.18 1219.78 1098.42 1219.78 1069.74V954.307H1180.08V880.782H1311.69ZM1346.24 1110.18H1413.89V955.043H1358.01V880.782H1508V1158.71C1508 1174.88 1499.18 1183.71 1483 1183.71H1346.24V1110.18Z" fill="white"/>
+                            <path d="M119.986 1344.37H144.35V1371.01H119.986V1344.37ZM266.93 1302.49V1371.01H244.85V1308.58C244.85 1297.92 240.282 1293.35 230.384 1293.35H198.407V1371.01H160.339V1353.5H177.089V1293.35H164.145V1275.84H239.52C257.793 1275.08 266.93 1283.46 266.93 1302.49ZM335.452 1310.1C335.452 1297.92 330.884 1293.35 319.464 1293.35H279.111V1275.84H330.884C349.157 1275.84 358.293 1284.22 358.293 1303.25V1371.01H336.214V1310.1H335.452ZM483.918 1293.35H473.259V1371.01H451.18V1293.35H403.975V1371.01H381.896V1293.35H371.998V1275.84H477.827C481.634 1275.84 483.918 1278.13 483.918 1281.93V1293.35ZM581.373 1330.66C585.941 1338.28 590.509 1345.89 593.555 1352.74H608.782V1370.25H578.327C570.714 1346.65 552.441 1323.81 534.93 1304.78L529.6 1370.25H496.862V1352.74H509.043L515.134 1292.59H497.623V1275.08H532.646C542.543 1283.46 554.725 1295.64 565.384 1308.58L576.805 1275.08H602.691C606.498 1275.08 608.782 1277.37 608.782 1281.17V1292.59H595.077L581.373 1330.66ZM674.259 1371.01H664.362V1344.37H688.725V1366.45C688.725 1377.1 686.441 1384.72 684.918 1390.05H671.975C673.498 1383.96 674.259 1376.34 674.259 1371.01ZM802.93 1281.93V1371.01H707.759V1293.35H697.862V1275.84H795.316C799.884 1275.08 802.93 1278.13 802.93 1281.93ZM780.089 1293.35H729.839V1353.5H780.089V1293.35H837.953 1293.35H818.157V1275.84H860.032V1333.71H837.953V1293.35ZM932.362 1310.1C932.362 1297.92 927.794 1293.35 916.373 1293.35H876.021V1275.84H927.032C945.305 1275.84 954.441 1284.22 954.441 1303.25V1371.01H932.362V1310.1ZM1042.76 1371.01H1021.44C1021.44 1353.5 1017.63 1345.89 1013.07 1341.32L994.794 1371.01H968.146V1353.5H981.089L1000.12 1323.05V1293.35H978.044V1275.84H1021.44V1321.53C1032.86 1326.85 1042 1339.8 1042.76 1371.01ZM1147.07 1353.5V1371.01H1053.42V1353.5H1112.04V1293.35H1053.42V1275.84H1134.12V1353.5H1147.07ZM1263.56 1302.49V1371.01H1241.48V1308.58C1241.48 1297.92 1236.91 1293.35 1227.01 1293.35H1195.03V1371.01H1156.96V1353.5H1173.71V1293.35H1160.77V1275.84H1236.15C1255.18 1275.08 1263.56 1283.46 1263.56 1302.49ZM1387.66 1309.34V1371.01H1333.6V1353.5H1365.58V1313.91C1365.58 1297.92 1357.96 1292.59 1347.31 1292.59C1336.65 1292.59 1324.46 1297.16 1313.04 1307.06V1371.78H1290.96V1293.35H1278.02V1275.84H1312.28V1288.03C1326.75 1278.89 1339.69 1274.32 1354.16 1274.32C1372.43 1273.56 1387.66 1283.46 1387.66 1309.34Z" fill="white"/>
+                            <path d="M754.309 586.183C754.309 586.183 793.033 461.258 874.914 435.387C956.795 409.516 1215.04 349.151 1339.84 215.835C1464.64 82.2861 1434.55 30.5445 1477.47 0.478516C1477.47 0.478516 935.1 103.729 857.651 224.459C780.203 344.956 754.309 370.827 754.309 370.827V586.183Z" fill="#78DDB5"/>
+                            <circle cx="752.802" cy="386.54" r="341.529" fill="none" stroke="white" stroke-width="45"/>
+                            <path d="M754.311 586.183C754.311 586.183 715.636 461.258 633.861 435.387C552.085 409.516 293.712 349.151 168.835 215.835C43.9584 82.2861 74.2456 30.5445 31.1445 0.478516C31.1445 0.478516 573.519 103.729 651.101 224.459C728.683 344.956 754.311 370.827 754.311 370.827V586.183Z" fill="#78DDB5"/>
+                        </svg>
+                    </div>
+                    <p style="color: white; margin-bottom: 12px; font-size: 18px; font-weight: 700;">חלה חובת סודיות על מסמך זה.</p>
+                    <p style="color: rgba(255, 255, 255, 0.8); font-size: 14px; margin-bottom: 0;">אין להעביר או להעתיק.</p>
+                </footer>
+            </main>
+        </div>
+    </div>
+
+    <!-- אלמנטים קבועים צפים -->
+    <a href="#" class="back-to-top" id="backToTop" title="חזרה למעלה" style="position: fixed; bottom: 40px; left: 40px; background: linear-gradient(135deg, #78DDB5 0%, #A6E5CC 100%); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0; transition: all 0.4s ease; text-decoration: none; font-size: 26px; box-shadow: 0 6px 24px rgba(120, 221, 181, 0.35); font-weight: 700; border: 2px solid rgba(255, 255, 255, 0.3); z-index: 99;"><i class="fa-solid fa-arrow-up"></i></a>
+    <div class="toast" id="toast"><i class="fa-solid fa-circle-check" style="color: var(--accent);"></i> הקוד הועתק בהצלחה!</div>
+
+    <script>
+        const backToTopBtn = document.getElementById('backToTop');
+        const sidebar = document.getElementById('sidebar');
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const sections = document.querySelectorAll('section');
+        const sidebarItems = document.querySelectorAll('aside nav ul li');
+        const mobileNavLinks = document.querySelectorAll('.mobile-sub-nav a');
+        const mobileSubNav = document.getElementById('mobileSubNav');
+        const toast = document.getElementById('toast');
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('open');
+            sidebarOverlay.classList.toggle('show');
+            const icon = menuToggle.querySelector('i');
+            if(sidebar.classList.contains('open')) {
+                icon.className = 'fa-solid fa-xmark';
+            } else {
+                icon.className = 'fa-solid fa-bars';
+            }
+        }
+
+        menuToggle.addEventListener('click', toggleSidebar);
+        sidebarOverlay.addEventListener('click', toggleSidebar);
+
+        document.querySelectorAll('nav a, .mobile-sub-nav a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href');
+                const targetSection = document.querySelector(targetId);
+                
+                if(targetSection) {
+                    if(sidebar.classList.contains('open')) toggleSidebar();
+                    
+                    const offset = window.innerWidth <= 1150 ? 125 : 50;
+                    const targetPosition = targetSection.getBoundingClientRect().top + window.pageYOffset - offset;
+                    
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 400) {
+                backToTopBtn.style.opacity = '1';
+                backToTopBtn.style.visibility = 'visible';
+            } else {
+                backToTopBtn.style.opacity = '0';
+                backToTopBtn.style.visibility = 'hidden';
+            }
+
+            let currentSectionId = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const offset = window.innerWidth <= 1150 ? 140 : 180;
+                if (window.pageYOffset >= (sectionTop - offset)) {
+                    currentSectionId = section.getAttribute('id');
+                }
+            });
+
+            if(currentSectionId) {
+                sidebarItems.forEach(li => {
+                    li.classList.remove('active');
+                    if (li.querySelector('a').getAttribute('href') === `#${currentSectionId}`) {
+                        li.classList.add('active');
+                    }
+                });
+
+                mobileNavLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${currentSectionId}`) {
+                        link.classList.add('active');
+                        
+                        const navLeft = mobileSubNav.offsetLeft;
+                        const linkLeft = link.offsetLeft;
+                        const linkWidth = link.clientWidth;
+                        const navWidth = mobileSubNav.clientWidth;
+                        
+                        mobileSubNav.scrollTo({
+                            left: linkLeft - (navWidth / 2) + (linkWidth / 2) - navLeft,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            }
+        });
+
+        backToTopBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        function copyCode(elementId) {
+            const codeText = document.getElementById(elementId).innerText;
+            navigator.clipboard.writeText(codeText).then(() => {
+                toast.classList.add('show');
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 2200);
+            }).catch(err => {
+                console.error('שגיאה בהעתקה: ', err);
+            });
+        }
+    </script>
+</body>
+</html>
