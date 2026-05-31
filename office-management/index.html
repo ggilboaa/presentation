@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ניהול המשרד: עבודה שוטפת – נשרים</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;500;600;700&family=Heebo:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #0A1C2F;
+            --primary-light: #1A3A42;
+            --accent: #78DDB5;
+            --accent-dark: #52B792;
+            --bg-body: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --text-main: #0A1C2F;
+            --text-muted: #475569;
+            --border-color: #E2E8F0;
+            
+            /* צבעי תיבות הדגש המעודנים */
+            --why-border: #EBC13A;
+            --why-bg: rgba(235, 193, 58, 0.06);
+            --why-text: #0A1C2F;
+            
+            --note-border: #78DDB5;
+            --note-bg: rgba(120, 221, 181, 0.08);
+            --note-text: #0A1C2F;
+            
+            --important-border: #E06768;
+            --important-bg: rgba(224, 103, 104, 0.08);
+            --important-text: #0A1C2F;
+            
+            --sidebar-width: 300px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Assistant', sans-serif;
+            line-height: 1.8;
+            color: var(--text-main);
+            background: var(--bg-body);
+            overflow-x: hidden;
+        }
+
+        .app-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* מובייל: סרגל עליון קבוע */
+        .mobile-header {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 65px;
+            background: var(--primary);
+            color: white;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 1010;
+            box-shadow: 0 4px 20px rgba(10, 28, 47, 0.1);
+        }
+
+        .mobile-header-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            height: 100%;
+        }
+
+        .mobile-header-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .mobile-header-logo svg {
+            width: 36px;
+            height: 36px;
+            display: block;
+        }
+
+        .mobile-header h1 {
+            font-family: 'Heebo', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            line-height: 1;
+            margin: 0;
+        }
+
+        .menu-toggle {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+        .menu-toggle:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* מובייל: סרגל ניווט פרקים צף קבוע */
+        .mobile-sub-nav {
+            display: none;
+            position: fixed;
+            top: 65px;
+            left: 0;
+            right: 0;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 1009;
+            border-bottom: 1px solid var(--border-color);
+            overflow-x: auto;
+            white-space: nowrap;
+            padding: 0 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+            scrollbar-width: none;
+        }
+        .mobile-sub-nav::-webkit-scrollbar {
+            display: none;
+        }
+
+        .mobile-sub-nav a {
+            display: inline-flex;
+            align-items: center;
+            height: 100%;
+            padding: 0 14px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 13.5px;
+            font-family: 'Heebo', sans-serif;
+            font-weight: 600;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s ease;
+        }
+        .mobile-sub-nav a.active {
+            color: var(--primary);
+            border-bottom-color: var(--accent);
+            font-weight: 700;
+        }
+
+        /* דסקטופ ותפריט צד רספונסיבי */
+        aside {
+            width: var(--sidebar-width);
+            background: var(--primary);
+            color: white;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            z-index: 1020;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: -10px 0 30px rgba(0,0,0,0.05);
+        }
+
+        .sidebar-header {
+            padding: 50px 30px 40px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .sidebar-logo svg {
+            width: 120px;
+            height: auto;
+            margin-bottom: 24px;
+        }
+
+        .sidebar-header h1 {
+            font-family: 'Heebo', sans-serif;
+            font-size: 22px;
+            font-weight: 800;
+            color: white;
+            line-height: 1.2;
+        }
+
+        nav {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px 0;
+        }
+        nav::-webkit-scrollbar { width: 5px; }
+        nav::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+
+        nav ul { list-style: none; }
+
+        nav a {
+            display: flex;
+            align-items: center;
+            padding: 14px 32px;
+            color: rgba(255, 255, 255, 0.65);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.25s ease;
+            border-right: 4px solid transparent;
+            font-family: 'Heebo', sans-serif;
+        }
+
+        nav a i {
+            margin-left: 14px;
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
+            display: inline-block;
+        }
+
+        nav a:hover {
+            color: white;
+            background: rgba(255,255,255,0.03);
+        }
+
+        nav li.active a {
+            color: white;
+            background: rgba(120, 221, 181, 0.12);
+            font-weight: 700;
+            border-right-color: var(--accent);
+        }
+        nav li.active a i { color: var(--accent); }
+
+        /* מסך ערפל במובייל */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 28, 47, 0.4);
+            backdrop-filter: blur(4px);
+            z-index: 1015;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .sidebar-overlay.show {
+            display: block;
+            opacity: 1;
+        }
+
+        /* מכולת התוכן המרכזית */
+        .main-container {
+            flex: 1;
+            margin-right: var(--sidebar-width);
+            padding: 60px 80px;
+            max-width: 1200px;
+        }
+
+        main {
+            display: flex;
+            flex-direction: column;
+            gap: 50px;
+        }
+
+        /* כרטיסי הנושאים */
+        section {
+            background: var(--card-bg);
+            border-radius: 24px;
+            box-shadow: 0 4px 30px rgba(148, 163, 184, 0.05);
+            padding: 60px;
+            border: 1px solid rgba(226, 232, 240, 0.7);
+            scroll-margin-top: 30px;
+            transition: box-shadow 0.3s ease;
+        }
+        section:hover {
+            box-shadow: 0 10px 40px rgba(148, 163, 184, 0.1);
+        }
+
+        h2 {
+            font-family: 'Heebo', sans-serif;
+            color: var(--primary);
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 32px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--accent);
+            position: relative;
+        }
+
+        h3 {
+            font-family: 'Heebo', sans-serif;
+            color: var(--primary);
+            font-size: 20px;
+            margin: 40px 0 18px 0;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+        }
+        h3::before {
+            content: '◆';
+            color: var(--accent);
+            font-size: 12px;
+            margin-left: 12px;
+        }
+
+        h4 {
+            font-family: 'Heebo', sans-serif;
+            color: var(--primary);
+            font-size: 17px;
+            margin: 28px 0 14px 0;
+            font-weight: 700;
+        }
+
+        p {
+            margin-bottom: 18px;
+            color: var(--primary-light);
+            font-size: 16.5px;
+            text-align: justify;
+        }
+
+        strong {
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        ol, ul {
+            margin: 18px 32px 28px 0;
+        }
+
+        li {
+            margin-bottom: 12px;
+            font-size: 16.5px;
+            color: var(--primary-light);
+        }
+
+        main a {
+            color: var(--primary);
+            text-decoration: none;
+            border-bottom: 2px solid var(--accent);
+            font-weight: 700;
+            transition: all 0.2s;
+            padding-bottom: 2px;
+        }
+        main a:hover {
+            background: var(--note-bg);
+            color: var(--accent-dark);
+        }
+
+        /* עיצוב תיבות המידע והדגשים */
+        .why-box, .note, .important {
+            margin: 32px 0;
+            padding: 24px 28px;
+            border-radius: 16px;
+            border-right: 5px solid;
+            background: #FFFFFF;
+        }
+
+        .box-title {
+            font-family: 'Heebo', sans-serif;
+            font-weight: 800;
+            font-size: 16px;
+            margin-bottom: 12px;
+            display: flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+        }
+        
+        .box-title i {
+            display: inline-block !important;
+            font-size: 16px !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+
+        .why-box { border-right-color: var(--why-border); background: var(--why-bg); }
+        .why-box .box-title { color: var(--why-border); }
+        .why-box p { color: var(--why-text); margin-bottom: 0; font-size: 16px; font-weight: 500; }
+
+        .note { border-right-color: var(--note-border); background: var(--note-bg); }
+        .note .box-title { color: var(--accent-dark); }
+        .note p { color: var(--note-text); margin-bottom: 0; font-size: 16px; font-weight: 500; }
+
+        .important { border-right-color: var(--important-border); background: var(--important-bg); }
+        .important .box-title { color: var(--important-border); }
+        .important p { color: var(--important-text); margin-bottom: 0; font-size: 16px; font-weight: 500; }
+
+        /* קוד בתוך הטקסט */
+        .code {
+            background: #F1F5F9;
+            padding: 3px 10px;
+            border-radius: 8px;
+            font-family: 'Consolas', monospace;
+            color: #E06768;
+            font-weight: 700;
+            font-size: 15px;
+            border: 1px solid #E2E8F0;
+            display: inline-block;
+            direction: ltr;
+            margin: 0 4px;
+        }
+
+        /* טבלאות */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+        }
+
+        th {
+            background: var(--primary);
+            color: white;
+            padding: 18px 24px;
+            text-align: right;
+            font-family: 'Heebo', sans-serif;
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        td {
+            padding: 18px 24px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 16px;
+            color: var(--primary);
+        }
+
+        tr:last-child td { border-bottom: none; }
+        tr:hover { background: #F8FAFC; }
+
+        /* כפתור העתקה מהירה */
+        .copy-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 700;
+            font-family: 'Heebo', sans-serif;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .copy-btn:hover {
+            background: var(--accent);
+            color: var(--primary);
+        }
+        .table-code-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .divider {
+            height: 1px;
+            background: var(--border-color);
+            margin: 20px 0;
+            display: none;
+        }
+
+        /* פוטר */
+        footer {
+            margin-top: 30px;
+            padding-top: 40px;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .footer-logo { margin-bottom: 24px; }
+        .footer-logo svg { width: 220px; height: auto; }
+        .footer-logo path { fill: var(--primary) !important; }
+
+        footer p {
+            font-size: 15px;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        /* כפתור למעלה צף */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            background: var(--primary);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            font-size: 18px;
+            box-shadow: 0 4px 20px rgba(10,28,47,0.15);
+            z-index: 99;
+        }
+        .back-to-top.show { opacity: 1; visibility: visible; }
+        .back-to-top:hover {
+            background: var(--accent);
+            color: var(--primary);
+            transform: translateY(-4px);
+        }
+
+        /* התראת העתקה */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--primary);
+            color: white;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-size: 14.5px;
+            font-weight: 700;
+            font-family: 'Heebo', sans-serif;
+            box-shadow: 0 10px 30px rgba(10,28,47,0.2);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transform: translateY(40px);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 2000;
+        }
+        .toast.show { transform: translateY(0); opacity: 1; visibility: visible; }
+
+        /* חוקי רספונסיביות */
+        @media (max-width: 1150px) {
+            aside { transform: translateX(100%); }
+            aside.open { transform: translateX(0); }
+            .sidebar-overlay.show { display: block; }
+            
+            .mobile-header { display: flex; }
+            .mobile-sub-nav { display: flex; }
+            
+            .main-container {
+                margin-right: 0;
+                padding: 145px 20px 40px 20px;
+            }
+            section {
+                padding: 40px 24px;
+                border-radius: 20px;
+                scroll-margin-top: 135px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h2 { font-size: 24px; }
+            h3 { font-size: 18px; }
+            p, li { font-size: 16px; }
+            .why-box, .note, .important { padding: 18px 20px; }
+            table { display: block; overflow-x: auto; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="mobile-header">
+        <div class="mobile-header-brand">
+            <div class="mobile-header-logo">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1508 1391" fill="none">
+                    <path d="M754.309 586.183C754.309 586.183 793.033 461.258 874.914 435.387C956.795 409.516 1215.04 349.151 1339.84 215.835C1464.64 82.2861 1434.55 30.5445 1477.47 0.478516C1477.47 0.478516 935.1 103.729 857.651 224.459C780.203 344.956 754.309 370.827 754.309 370.827V586.183Z" fill="#78DDB5"/>
+                    <circle cx="752.802" cy="386.54" r="341.529" fill="none" stroke="white" stroke-width="45"/>
+                    <path d="M754.311 586.183C754.311 586.183 715.636 461.258 633.861 435.387C552.085 409.516 293.712 349.151 168.835 215.835C43.9584 82.2861 74.2456 30.5445 31.1445 0.478516C31.1445 0.478516 573.519 103.729 651.101 224.459C728.683 344.956 754.311 370.827 754.311 370.827V586.183Z" fill="#78DDB5"/>
+                </svg>
+            </div>
+            <h1>ניהול המשרד: עבודה שוטפת</h1>
+        </div>
+        <button class="menu-toggle" id="menuToggle" aria-label="פתח תפריט מלא">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+    </div>
+
+    <div class="mobile-sub-nav" id="mobileSubNav">
+        <a href="#whatsapp" class="active">מרחבי וואטסאפ</a>
+        <a href="#excel">גיליונות אקסל</a>
+        <a href="#interfaces">ממשקי עבודה</a>
+        <a href="#routine">נוהל יום עבודה</a>
+        <a href="#tasks">משימות יומיות</a>
+        <a href="#calendar">ניהול היומן</a>
+        <a href="#summit">עבודה עם סאמיט</a>
+        <a href="#expenses">תיוק הוצאות</a>
+        <a href="#monthly">סיכום חודשי</a>
+        <a href="#salaries">משכורות</a>
+        <a href="#cashflow">עדכון תזרים</a>
+        <a href="#patient">קליטת מטופל</a>
+        <a href="#therapist">קליטת מטפל</a>
+        <a href="#rooms">מפת חדרים</a>
+        <a href="#miscellaneous">שונות</a>
+        <a href="#appendix">נספח ופרטים</a>
+    </div>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="app-layout">
+        <aside id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1508 1391" fill="none">
+                        <path d="M338.951 907.251V1183.71H29.41V954.307H0V880.782H313.217C329.392 880.782 338.951 891.076 338.951 907.251ZM244.839 954.307H123.522V1110.18H245.574V954.307H244.839ZM436.004 954.307H380.86V880.782H529.381V1067.54H436.004V954.307ZM733.045 999.893C733.045 966.071 719.811 954.307 690.401 954.307H571.29V880.782H740.398C796.277 880.782 827.157 905.781 827.157 967.542V1184.44H733.045V999.893ZM1311.69 880.782V1077.09C1311.69 1155.77 1283.01 1184.44 1199.19 1184.44H988.913C905.829 1184.44 876.419 1155.77 876.419 1077.09V880.782H1007.29V954.307H967.59V1069.74C967.59 1098.42 980.09 1110.18 1010.23 1110.18H1048.47V880.782H1138.17V1110.18H1177.14C1207.28 1110.18 1219.78 1098.42 1219.78 1069.74V954.307H1180.08V880.782H1311.69ZM1346.24 1110.18H1413.89V955.043H1358.01V880.782H1508V1158.71C1508 1174.88 1499.18 1183.71 1483 1183.71H1346.24V1110.18Z" fill="white"/>
+                        <path d="M119.986 1344.37H144.35V1371.01H119.986V1344.37ZM266.93 1302.49V1371.01H244.85V1308.58C244.85 1297.92 240.282 1293.35 230.384 1293.35H198.407V1371.01H160.339V1353.5H177.089V1293.35H164.145V1275.84H239.52C257.793 1275.08 266.93 1283.46 266.93 1302.49ZM335.452 1310.1C335.452 1297.92 330.884 1293.35 319.464 1293.35H279.111V1275.84H330.884C349.157 1275.84 358.293 1284.22 358.293 1303.25V1371.01H336.214V1310.1H335.452ZM483.918 1293.35H473.259V1371.01H451.18V1293.35H403.975V1371.01H381.896V1293.35H371.998V1275.84H477.827C481.634 1275.84 483.918 1278.13 483.918 1281.93V1293.35ZM581.373 1330.66C585.941 1338.28 590.509 1345.89 593.555 1352.74H608.782V1370.25H578.327C570.714 1346.65 552.441 1323.81 534.93 1304.78L529.6 1370.25H496.862V1352.74H509.043L515.134 1292.59H497.623V1275.08H532.646C542.543 1283.46 554.725 1295.64 565.384 1308.58L576.805 1275.08H602.691C606.498 1275.08 608.782 1277.37 608.782 1281.17V1292.59H595.077L581.373 1330.66ZM674.259 1371.01H664.362V1344.37H688.725V1366.45C688.725 1377.1 686.441 1384.72 684.918 1390.05H671.975C673.498 1383.96 674.259 1376.34 674.259 1371.01ZM802.93 1281.93V1371.01H707.759V1293.35H697.862V1275.84H795.316C799.884 1275.08 802.93 1278.13 802.93 1281.93ZM780.089 1293.35H729.839V1353.5H780.089V1293.35H837.953 1293.35H818.157V1275.84H860.032V1333.71H837.953V1293.35ZM932.362 1310.1C932.362 1297.92 927.794 1293.35 916.373 1293.35H876.021V1275.84H927.032C945.305 1275.84 954.441 1284.22 954.441 1303.25V1371.01H932.362V1310.1ZM1042.76 1371.01H1021.44C1021.44 1353.5 1017.63 1345.89 1013.07 1341.32L994.794 1371.01H968.146V1353.5H981.089L1000.12 1323.05V1293.35H978.044V1275.84H1021.44V1321.53C1032.86 1326.85 1042 1339.8 1042.76 1371.01ZM1147.07 1353.5V1371.01H1053.42V1353.5H1112.04V1293.35H1053.42V1275.84H1134.12V1353.5H1147.07ZM1263.56 1302.49V1371.01H1241.48V1308.58C1241.48 1297.92 1236.91 1293.35 1227.01 1293.35H1195.03V1371.01H1156.96V1353.5H1173.71V1293.35H1160.77V1275.84H1236.15C1255.18 1275.08 1263.56 1283.46 1263.56 1302.49ZM1387.66 1309.34V1371.01H1333.6V1353.5H1365.58V1313.91C1365.58 1297.92 1357.96 1292.59 1347.31 1292.59C1336.65 1292.59 1324.46 1297.16 1313.04 1307.06V1371.78H1290.96V1293.35H1278.02V1275.84H1312.28V1288.03C1326.75 1278.89 1339.69 1274.32 1354.16 1274.32C1372.43 1273.56 1387.66 1283.46 1387.66 1309.34Z" fill="white"/>
+                        <path d="M754.309 586.183C754.309 586.183 793.033 461.258 874.914 435.387C956.795 409.516 1215.04 349.151 1339.84 215.835C1464.64 82.2861 1434.55 30.5445 1477.47 0.478516C1477.47 0.478516 935.1 103.729 857.651 224.459C780.203 344.956 754.309 370.827 754.309 370.827V586.183Z" fill="#79DEB6"/>
+                        <circle cx="752.802" cy="386.54" r="341.529" fill="none" stroke="white" stroke-width="31.1433"/>
+                        <path d="M754.311 586.183C754.311 586.183 715.636 461.258 633.861 435.387C552.085 409.516 293.712 349.151 168.835 215.835C43.9584 82.2861 74.2456 30.5445 31.1445 0.478516C31.1445 0.478516 573.519 103.729 651.101 224.459C728.683 344.956 754.311 370.827 754.311 370.827V586.183Z" fill="#79DEB6"/>
+                    </svg>
+                </div>
+                <h1>ניהול המשרד: עבודה שוטפת</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li class="active"><a href="#whatsapp"><i class="fa-brands fa-whatsapp"></i>מרחבי וואטסאפ</a></li>
+                    <li><a href="#excel"><i class="fa-solid fa-file-excel"></i>גיליונות אקסל</a></li>
+                    <li><a href="#interfaces"><i class="fa-solid fa-laptop-file"></i>ממשקי עבודה</a></li>
+                    <li><a href="#routine"><i class="fa-solid fa-business-time"></i>נוהל יום עבודה</a></li>
+                    <li><a href="#tasks"><i class="fa-solid fa-list-check"></i>משימות יומיות</a></li>
+                    <li><a href="#calendar"><i class="fa-solid fa-calendar-days"></i>ניהול היומן</a></li>
+                    <li><a href="#summit"><i class="fa-solid fa-credit-card"></i>עבודה עם סאמיט</a></li>
+                    <li><a href="#expenses"><i class="fa-solid fa-receipt"></i>תיוק הוצאות</a></li>
+                    <li><a href="#monthly"><i class="fa-solid fa-calculator"></i>סיכום חודשי</a></li>
+                    <li><a href="#salaries"><i class="fa-solid fa-money-bill-wave"></i>משכורות ותשלומים</a></li>
+                    <li><a href="#cashflow"><i class="fa-solid fa-chart-line"></i>עדכון תזרים</a></li>
+                    <li><a href="#patient"><i class="fa-solid fa-user-plus"></i>קליטת מטופל חדש</a></li>
+                    <li><a href="#therapist"><i class="fa-solid fa-user-tie"></i>קליטת מטפל חדש</a></li>
+                    <li><a href="#rooms"><i class="fa-solid fa-map-location-dot"></i>מפת החדרים</a></li>
+                    <li><a href="#miscellaneous"><i class="fa-solid fa-asterisk"></i>שונות ודגשים</a></li>
+                    <li><a href="#appendix"><i class="fa-solid fa-circle-info"></i>נספח ופרטי מרכז</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <div class="main-container">
+            <main>
+                <section id="whatsapp">
+                    <h2>מרחבי עבודה בוואטסאפ</h2>
+                    <ol>
+                        <li><strong>משימות בנשרים:</strong> קבוצה משותפת עם חזקי, המשמשת לתכתובת השוטפת בנושאי משימות, עדכונים והתנהלות שוטפת.</li>
+                        <li><strong>צילום מעטפות מזומן:</strong> קבוצה שבה חזקי מעלה צילומי מעטפות של תשלומי מזומן. על כל צילום שמגיע יש להוציא קבלה ולעדכן הכנסות, כמפורט בהמשך.</li>
+                        <li><strong>תיוק חשבוניות:</strong> קבוצה שבה מועלות חשבוניות עבור הוצאות, לתיוק במערכת סאמיט, כמפורט בהמשך.</li>
+                        <li><strong>מטפלים נשרים:</strong> קבוצה שמשתתפים בה כלל המטפלים במרכז. משמשת להודעות משותפות לצוות, לבדיקת פניות ושינויי שעות בחדרים, לעדכונים ולתיאום הדרכות צוותיות.</li>
+                        <li><strong>עדכוני פגישות:</strong> לכל מטפל קיימת קבוצה ייעודית משותפת למזכירות ולחזקי. בקבוצה זו מתנהלות הפניות של מטופלים חדשים, עדכוני תשלומים, תכתובת סיכום הפגישות החודשית ובקשות לשינויי שעות חדרים או כל צורך אחר שעולה מול המשרד.</li>
+                    </ol>
+                </section>
+
+                <section id="excel">
+                    <h2>אקסל “נשרים 2026”: פירוט גיליונות העבודה</h2>
+                    <p>קובץ האקסל משמש לניהול כולל של פעילות המשרד: ניהול קליניקת חזקי, ניהול תזרים מרכז נשרים, מצבת המטפלים, רישום תשלומי מזומן, ניהול משכורות ומעקב אחר משימות שוטפות.</p>
+                    <p>הגיליונות מסודרים כך:</p>
+                    <ol>
+                        <li><strong>קליניקה חזקי:</strong> רשימת המטופלים הפרטיים שחזקי פוגש באופן קבוע. בעת הגבייה החודשית, יש לעבור על רישומי החובות בגיליון זה ולבצע גבייה במקביל לגבייה הכללית של מטופלי המרכז. הגיליון כולל גם טבלה שנייה לרישום חובות בגין הרצאות ותאריך ביצוען. בעת ביצוע הרצאה יש להזין לטבלה את מקום ההרצאה ואת החוב בגינה. מכיוון שהרצאות מוזמנות על ידי גופים העובדים עם מערכות שונות או בהסדרי תשלום של שוטף ועוד, נדרש מעקב שוטף אחר החובות בהתאם למה שסוכם ובקשר ישיר עם הגורמים המזמינים.</li>
+                        <li><strong>מצבת נשרים:</strong> רשימת כלל המטפלים והמטופלים שמלווים על ידם. הגיליון משמש למיפוי הפניות ולבחינת יכולת הקליטה של כל מטפל בכל רגע נתון.</li>
+                        <li><strong>משימות לביצוע:</strong> גיליון לרישום משימות הנמצאות באחריות חזקי או המשרד ושנדרש להן המשך טיפול מסודר.</li>
+                        <li><strong>תזרים:</strong> גיליון ניהול התזרים השנתי, הכולל את הכנסות המרכז וחזקי, את ההוצאות הכוללות, פילוח מקורות הכנסה ומקורות הוצאה ואת התזרים החודשי. בשורה העליונה מופיע רישום יתרת המזומן שנדרש להפקדה בכל רגע נתון.</li>
+                        <li><strong>מזומנים:</strong> בעת קבלת תשלום במזומן, במקביל להפקת הקבלה ולרישום בשורת המזומן להפקדה ובכרטיס המטופל בטיפולוג, ההכנסה תירשם גם בגיליון זה. הדבר נובע מניסיון העבר ומהצורך ברישום מדויק של סכומי התשלום ושל תאריכי התשלום.</li>
+                        <li><strong>משכורות:</strong> כלל התשלומים המועברים ב-10 לחודש מפורטים בגיליון זה. לפני ביצוע ההעברות, יש למלא את כל השורות הרלוונטיות, כדי למנוע פספוסים, לוודא פנייה תקציבית בעו”ש ולשמור על רישום עקבי חודש בחודשו.</li>
+                        <li><strong>חובות אינטייק:</strong> כלל המטופלים שמופנים למרכז מנוהלים בתוכנה שנקראת טיפולוג. מכיוון שעבור מטופלים בפגישה הראשונית לא נפתחת כרטסת בטיפולוג עד לחיבור עם המטפל הרלוונטי — בגיליון זה נציין את המפגש ואת החוב בגינו, ונצבע אותו בצבע אדום עד לווידוא ביצוע התשלום. לרוב, למטופלים שרשומה להם חובה בגיליון זה, קיימת חובה במקביל אליה בכרטסת בטיפולוג עבור התהליך שהחל. נדרשת תשומת לב לביצוע הגבייה עבור סכום זה בנוסף לגבייה עבור הסכום הרשום לחובה בכרטסת המטופל.</li>
+                        <li><strong>גבייה מטופלים:</strong> גיליון המפרט את תהליך הגבייה הייחודי לכל מטופל: מיהו הגורם המשלם, מהו אופן הפנייה המועדף, מהו אופן ביצוע התשלום והאם נדרש אישור לפני ביצוע סליקה.</li>
+                    </ol>
+                </section>
+
+                <section id="interfaces">
+                    <h2>ממשקי עבודה נוספים</h2>
+                    <p>בנוסף לקבוצות הוואטסאפ ולאקסל “נשרים 2026”, העבודה השוטפת מתנהלת מול ממשקי העבודה הבאים:</p>
+                    <ul>
+                        <li><strong>סאמיט:</strong> מערכת קבלות, דרישות תשלום וסליקת אשראי.</li>
+                        <li><strong>טיפולוג:</strong> המערכת הטיפולית המרכזית לניהול תיקי מטופלים, חובות, דיווחי מפגשים והרשאות.</li>
+                        <li><strong>מפת חדרים:</strong> קובץ שיתופי בסרגל הסימניות לניהול ושריון חדרים בקליניקות.</li>
+                        <li><strong>יומן Google:</strong> היומן האישי והעסקי של חזקי.</li>
+                        <li><strong>חשבון הבנק מרכנתיל:</strong> לבדיקת תנועות יומיומית.</li>
+                    </ul>
+                </section>
+
+                <section id="routine">
+                    <h2>פרק א’: נוהל יום עבודה</h2>
+                    <p>בנוהל השוטף, העבודה בכל יום צריכה להתבצע מול ממשקי העבודה שהוזכרו, בפתיחת כרטיסיות עבודה בדפדפן המחשב.</p>
+                    <p>הגישה לכרטיסיות אלו מסונכרנת על חשבון הגוגל (<span class="code">ar.nesharim@gmail.com</span>), ופתיחת כרטיסיה חדשה תוביל לקישורים לפתיחתן הישירה. בכל בוקר, עם פתיחת עמדת העבודה, יש לפתוח את הלשוניות הבאות בדפדפן ולעבוד בהן לאורך כל היום:</p>
+                    <ol>
+                        <li><strong>סאמיט</strong> — מערכת קבלות, דרישות תשלום וסליקת אשראי.</li>
+                        <li><strong>טיפולוג</strong> — המערכת הטיפולית המרכזית לניהול תיקי מטופלים, חובות, דיווחי מפגשים והרשאות.</li>
+                        <li><strong>אקסל “נשרים 2026”</strong> — כולל לשוניות: תזרים מזומנים, יצירת קשר לגבייה, מזומנים, משכורות לפי חודשים וטבלת משימות לביצוע.</li>
+                        <li><strong>מפת חדרים</strong> — קובץ שיתופי בסרגל הסימניות לניהול ושריון חדרים בקליניקות.</li>
+                        <li><strong>יומן Google</strong> — היומן האישי והעסקי של חזקי.</li>
+                        <li><strong>חשבון הבנק מרכנתיל (בנק 17, סניף 635, מספר חשבון 105051189)</strong> — לבדיקת תנועות יומיומית.</li>
+                    </ol>
+                </section>
+
+                <section id="tasks">
+                    <h2>פרק ב’: משימות יומיות קבועות</h2>
+                    <p>מדי יום יש לבצע, לפי הסדר הזה:</p>
+                    <ol>
+                        <li><strong>מייל:</strong> בדיקה ומענה להודעות נכנסות. אם הגיעה פנייה מהאתר, יש לחזור לפונה ולברר מה הוא צריך. קבלות שמגיעות במייל יש לתייק בסאמיט (ראו פרק ה’).</li>
+                        <li><strong>וואטסאפ:</strong> מענה להודעות ותקשורת שוטפת.</li>
+                        <li><strong>בנק:</strong> כניסה לחשבון הבנק ובדיקת תנועות חדשות. על כל הכנסה חדשה יש להפיק מיידית קבלה בסאמיט (ראו פרק ד’, סעיף 1). כמו כן, על הודעה מסאמיט על תשלום באשראי של מטופל, יש להיכנס מיידית לתיק שלו בטיפולוג ולהזין את הסכום כיתרת זכות.</li>
+                        <li><strong>תזכורת אינטייק:</strong> בדיקה אם יש פגישות אינטייק מתוכננות, ותזכורת או וידוא הגעה יום לפני הפגישה הרשומה.</li>
+                        <li><strong>גבייה אינטייק:</strong> גבייה בגין פגישות ייעוץ שנערכו. הגבייה תתבצע עבור פגישות שחלפו ממועד הפגישה יומיים (לא להתקשר מיד אחרי הפגישה, אבל לא לתת לזה להישכח אם לא נעשתה הפנייה וחיבור למטפל. גם אם נעשתה הפנייה וחיבור למטפל, אין צורך להמתין עם גביית התשלום עבור האינטייק).</li>
+                        <li><strong>גבייה שוטפת:</strong> טיפול בחובות פתוחים (ראו פרק ו’).</li>
+                        <li><strong>חזרה לטלפונים:</strong> מענה לשיחות שנפספסו.</li>
+                    </ol>
+                </section>
+
+                <section id="calendar">
+                    <h2>פרק ג’: ניהול היומן ופניות ראשוניות</h2>
+                    
+                    <h3>סוגי משבצות ביומן</h3>
+                    <p>ביומן של חזקי קיימים שני סוגי משבצות, ויש להקפיד על ההבחנה ביניהם:</p>
+                    <p>משבצות בירוק בהיר, <strong>“פגישת ייעוץ”</strong>, מיועדות אך ורק לשיבוץ פגישות ראשוניות פרונטליות (אינטייק).</p>
+                    
+                    <div class="important">
+                        <div class="box-title"><i class="fa-solid fa-triangle-exclamation"></i> חשוב:</div>
+                        <p>הפגישות עם חזקי הן בעלות של 550 ש”ח. אורך הפגישה הוא 60 דקות.</p>
+                    </div>
+
+                    <p>משבצות <strong>“שיחות ייעוץ”</strong> מיועדות לשיחות טלפוניות קצרות עם הורים מתעניינים או עם כאלו שרוצים רק להתייעץ.</p>
+
+                    <div class="important">
+                        <div class="box-title"><i class="fa-solid fa-triangle-exclamation"></i> חשוב:</div>
+                        <p>אנשים שמעוניינים בשיחה מקדימה לפגישה שנקבעה יקבלו קדימות על פני אנשים שרוצים להתייעץ בלבד. יחד עם זאת — אנו קובעים שיחות ייעוץ לכולם ללא תלות בקביעת פגישה.</p>
+                    </div>
+
+                    <div class="note">
+                        <div class="box-title"><i class="fa-solid fa-circle-info"></i> זכור:</div>
+                        <p>אם רוצים לקבוע פגישה ראשונית לנער, אין צורך לנתב לשיחה ראשונית, וההיענות לכך תהיה רק אם נתבקש לכך.</p>
+                    </div>
+
+                    <h3>בקרת זמינות</h3>
+                    <p>אם במהלך העבודה השוטפת את רואה תפוסה מלאה ביומן של שבוע ומעלה לשיחות ייעוץ או לפגישות ראשוניות, חובה לעדכן את חזקי.</p>
+
+                    <div class="why-box">
+                        <div class="box-title"><i class="fa-solid fa-circle-question"></i> למה?</div>
+                        <p>כדי שתינתן לו האפשרות לווסת את הפניות או לתעדף הפניות של מטופלים שעלולים לנשור אם לא יינתן להם תאריך יעד רלוונטי לפגישה.</p>
+                    </div>
+
+                    <h3>הרצאות</h3>
+                    <p>מחיר הרצאה של חזקי הוא 2,200 ש”ח בתוספת נסיעות, שמחושבות לפי 1.6 ש”ח לקילומטר עבור הרצאות המרוחקות מעל 40 ק”מ מהמרכז בירושלים. עבור הרצאות שנמצאות בקרבת מקום, לא ייגבה תשלום עבור הנסיעות.</p>
+
+                    <div class="important">
+                        <div class="box-title"><i class="fa-solid fa-triangle-exclamation"></i> חשוב:</div>
+                        <p>לרוב, גם אם היומן מלא, אם יש ביקוש — נתעדף יציאה להרצאה על פני פגישה פרטנית. לכן, כשמגיעה פנייה להרצאה בזמן שבו היומן בתפוסה מלאה, יש לסמן את התאריך כאפשרי ולאשרו סופית מול חזקי לפני הסגירה.</p>
+                    </div>
+
+                    <h3>ויסות פגישות שאינן ראשוניות</h3>
+                    <p>חזקי אינו מקבל מטופלים לתהליכים ארוכים וקבועים. מטופל שמבקש לקבוע פגישה שנייה או שלישית אצל חזקי, יהיה בתעדוף נמוך מפגישות ראשוניות, אף פעם לא על חשבון חלונות אחרונים ביומן בראייה לטווח של שבוע קדימה, ורק באישור חזקי.</p>
+
+                    <div class="why-box">
+                        <div class="box-title"><i class="fa-solid fa-circle-question"></i> למה?</div>
+                        <p>חזקי לא מקבל מטופלים חדשים. במידת הצורך נכניס, אבל לא על חשבון צרכים אחרים מאותן שעות. בנוסף, אנחנו רוצים למנוע היקשרות טיפולית ממושכת לחזקי, הפיכת הקביעה הזו ללא רלוונטית וזמינה, ויצירת עידוד למעבר למטפלים במרכז, תוך הכרה בכך שחזקי אינו זמין למענה ממושך.</p>
+                    </div>
+                </section>
+
+                <section id="summit">
+                    <h2>פרק ד’: עבודה עם סאמיט</h2>
+                    
+                    <h3>1. הפקת קבלות</h3>
+                    <p>בעמוד הראשי: <strong>הכנסות -> יצירת חשבון קבלה</strong> (מצד ימין למעלה). יש להזין:</p>
+                    <ol>
+                        <li>שם לקוח.</li>
+                        <li>מוצר: “פגישה טיפולית”, מספר מפגשים וסכום לפגישה (עבור מטופלים ותיקים 350 ש”ח, עבור חדשים יותר 400 ש”ח).</li>
+                        <li>סוג תשלום: העברה (יש להזין את תאריך הערך של הבנק), מזומן או צ’ק. עבור תשלום באשראי מופקת קבלה אוטומטית במערכת.</li>
+                        <li>שמירה סופית.</li>
+                    </ol>
+
+                    <h3>2. הפקת מסמכים נוספים</h3>
+                    <p>בהתנהלות מול גורמים מערכתיים (דולה ומשקה, אהבת עולם, הרצאות וכו’) נתבקש להנפיק מסמך דרישת תשלום. הפקת מסמכים נוספים נמצאת בעמוד הראשי, מצד ימין למעלה, שם יש אפשרות ליצירת מסמך אחר: דרישת תשלום, הצעת מחיר וכדומה.</p>
+
+                    <h3>3. סליקת אשראי</h3>
+                    <p>בעמוד הראשי יש אפשרות לסליקת אשראי. אם מדובר בלקוח קיים, מספר האשראי יעלה אוטומטית עם הזנת שמו. אם מדובר בלקוח חדש, יש להזין את הפרטים ולאחר מכן ללחוץ על “יצירת חיוב”.</p>
+
+                    <div class="important">
+                        <div class="box-title"><i class="fa-solid fa-triangle-exclamation"></i> חשוב:</div>
+                        <p>אין לבצע חיוב עם כרטיס האשראי השמור במערכת, אם לא מצוין בגיליון “גבייה מטופלים” באקסל “נשרים 2026” שניתן לחייב ללא הודעה או בדיקה מקדימה.</p>
+                    </div>
+                </section>
+
+                <section id="expenses">
+                    <h2>פרק ה’: תיוק הוצאות בסאמיט</h2>
+                    <p>כל קבלה עבור הוצאה שמגיעה:</p>
+                    <ol>
+                        <li>מתויקת בהוצאות בסאמיט.</li>
+                        <li>נרשמת בגיליון התזרים במיקום הרלוונטי.</li>
+                    </ol>
+                    <p><strong>אופן ההעלאה לסאמיט:</strong> הוצאות -> העלאת הוצאה -> תיוק קבצי הוצאות. יש להזין שם, לוודא שהסכום תואם לקבלה, לבחור צורת תשלום ולשמור.</p>
+                    
+                    <h4>צורת התיוק לפי סוג תשלום:</h4>
+                    <ul>
+                        <li><strong>קבלות של העברה בנקאית</strong> מחשבון העמותה או מאשראי העמותה — מתויקות באופן רגיל. בפירוט אופן ההוצאה ייכתב האופן שבו בוצע התשלום.</li>
+                        <li><strong>הוצאות ששולמו בכרטיס האשראי הפרטי של חזקי</strong> (מסיים ב-8298) או ששולמו במזומן — מתויקות תחת צורת תשלום “מזומן”.</li>
+                    </ul>
+
+                    <h4>לאחר מכן:</h4>
+                    <ol>
+                        <li>בתזרים האקסל, יש לוודא רישום ההוצאה בחודש ובמיקום הרלוונטי.</li>
+                        <li>להפחית את הסכום מסך המזומן הכללי המופיע בשורה העליונה בגיליון התזרים.</li>
+                        <li>לעדכן את השורה הסופית המסומנת בצהוב בגיליון “מזומנים 2026”.</li>
+                    </ol>
+
+                    <div class="important">
+                        <div class="box-title"><i class="fa-solid fa-triangle-exclamation"></i> חשוב:</div>
+                        <p>קבלות עבור תשלומים לחברת Upay יש להוריד ישירות ממערכת Upay ולתייק כהוצאה לכל דבר.</p>
+                    </div>
+
+                    <h4>החזר הוצאות חריגות:</h4>
+                    <p>אם שולמו הוצאות המרכז על ידי חזקי מחשבונו הפרטי, וצוין לבצע החזר הוצאות בהעברה בנקאית, יש לוודא קבלת החשבונית מהספק, לבצע העברה מחשבון העמותה לחשבונו הפרטי בצמוד להעברת המשכורות (להכניס לטבלת המשכורות כפי שיפורט בהמשך) ולתייק את ההוצאה בסאמיט תחת תשלום בהעברה.</p>
+                </section>
+
+                <section id="monthly">
+                    <h2>פרק ו’: סיכום חודשי — תשלומים וגבייה</h2>
+                    
+                    <h3>שלב א’: תזכורת למטפלים (סוף החודש)</h3>
+                    <p>בסוף כל חודש יש לשלוח תזכורת בקבוצת המטפלים לסיים את עדכון הפגישות בטיפולוג, כדי שתתאפשר הגבייה.</p>
+                    
+                    <h3>שלב ב’: סיכום ואישור פגישות (ה-1 עד ה-2 לחודש)</h3>
+                    <p>את סיכום מספר הפגישות שקוימו נמצא בטיפולוג: <strong>דוחות -> דוח ריכוז מפגשים למטפל</strong>, וסינון לפי “חודש אחרון”. לכל מטפל יישלח סיכום סך הפגישות שעודכנו במערכת בחודש החולף — בקבוצת העדכונים הייעודית.</p>
+                    <p>סיכום הפגישות לכל מטפל יהיה בפורמט הזה:<br>שם המטופל ומספר הפגישות שבוצעו, ובתחתית הרשימה סך כל הפגישות שקוימו.</p>
+                    
+                    <div class="important">
+                        <div class="box-title"><i class="fa-solid fa-triangle-exclamation"></i> חשוב:</div>
+                        <p>אין להתקדם לשלב הגבייה ללא אישור מספר הפגישות שבוצעו על ידי כלל המטפלים.</p>
+                    </div>
+
+                    <h3>שלב ג’: הפקת דוח חובות ויצירת קשר (מה-2 לחודש)</h3>
+                    <p>במערכת הטיפולוג: <strong>דוחות -> דוח גבייה למטופל</strong>, ומחפשים לפי החודש החולף. מתקבלת רשימת חובות המטופלים. לאחר מכן פותחים את האקסל בלשונית “יצירת קשר לגבייה”, שם מופיע כל מטופל עם דרך התשלום שלו.</p>
+                    <p><strong>פעולה לפי סוג המטופל:</strong></p>
+                    <ul>
+                        <li>עבור מי שרשום אצלו “לחייב אשראי” — נחייב ישירות ממערכת הסאמיט, וקבלה עבור התשלום תופק אוטומטית.</li>
+                        <li>עבור מי שמופיע אצלו “לחייב באשראי” עם סימן שאלה, יש לפנות אליו תחילה בוואטסאפ או במייל עם סיכום הפגישות, ולבצע את החיוב רק לאחר אישורו המפורש.</li>
+                    </ul>
+
+                    <h3>שלב ד’: סגירת חוב בטיפולוג</h3>
+                    <p>לאחר הפקת קבלה בגין תשלום ידני (העברה או מזומן), יש להיכנס לתיק המטופל בטיפולוג, להזין ביתרה את הסכום ששולם, את מספר הקבלה ואת דרך התשלום, ולבצע “שיוך יתרה לחוב”.</p>
+
+                    <h3>טיפול במזומנים</h3>
+                    <p>תשלומים ששולמו במזומן יועלו על ידי חזקי בקבוצת הוואטסאפ “תשלומים במזומן”. עם קבלת הצילום יש לבצע ארבע פעולות:</p>
+                    <ol>
+                        <li>להזין את פרטי המשלם בלשונית “מזומנים” באקסל.</li>
+                        <li>להפיק קבלה בסאמיט (סוג תשלום: מזומן).</li>
+                        <li>להיכנס לתיק המטופל בטיפולוג ולהזין את הסכום ביתרה, כולל מספר קבלה ודרך תשלום.</li>
+                    </ol>
+
+                    <div class="important">
+                        <div class="box-title"><i class="fa-solid fa-triangle-exclamation"></i> חשוב:</div>
+                        <p>בסיום כל שבוע קלנדרי כדאי להזכיר לחזקי לשלוח צילומי מעטפות מזומן מהכספת.</p>
+                    </div>
+
+                    <h3>גבייה מחגי</h3>
+                    <p>חגי מעביר מדי חודש תשלום על שעות שימוש פרטיות במרכז. עם העברת התשלום על ידו, יש להפיק לו קבלה בסאמיט ולציין בפירוט: “שעות טיפול קליניקה” בתוספת הסכום הרלוונטי.</p>
+                </section>
+
+                <section id="salaries">
+                    <h2>פרק ז’: משכורות ותשלומים למטפלים</h2>
+                    
+                    <h3>שלב א’: הכנת טבלת המשכורות (ה-3 לחודש)</h3>
+                    <p>לאחר שכל המטפלים אישרו את סיכום הפגישות, מזינים את מספר הפגישות המאושר של כל מטפל בלשונית “משכורות לפי חודשים” באקסל.</p>
+                    <p><strong>שני מטפלים דורשים טיפול מיוחד:</strong></p>
+                    <ul>
+                        <li><strong>יעקב ששון:</strong> חלק מפגישותיו מחושבות לפי 200 ש”ח וחלקן לפי 180 ש”ח. מהסכום הסופי שיוצא לו, מעבירים 3,600 ש”ח לשרה מסקנס ואת היתרה ליעקב.</li>
+                    </ul>
+                    <div class="important">
+                        <div class="box-title"><i class="fa-solid fa-triangle-exclamation"></i> חשוב:</div>
+                        <p>שני הסכומים מועברים לאותו חשבון בנק בדיוק; רק השם בהוראת ההעברה משתנה.</p>
+                    </div>
+                    <ul>
+                        <li><strong>שמעון שליו:</strong> מדי חודש מועברים לו 3,600 ש”ח כסכום קבוע. אם ביצע פגישות מעבר לסכום זה, רושמים את היתרה לזכותו. אם ביצע פחות, מורידים מהיתרה הצבורה.</li>
+                    </ul>
+
+                    <h3>שלב ב’: ביצוע העברות (ה-9 לחודש)</h3>
+                    <p>בבוא העת, מבצעים את העברות השכר למטפלים ולחשבונות חזקי ואיילה מחשבון הבנק. כל העברה מחייבת אישור כפול. נעשה זאת באמצעות ביצוע ההעברה מחשבון אחד ואישורה הסופי מהחשבון השני, תוך הזנת קודי אימות מהמרקוד.</p>
+                    <p>מרקוד = אפליקציית קודי האימות של בנק מרכנתיל.<br>תתאפשר כניסה דרך שם המשתמש של חזקי, ובמקביל כניסה דרך שם המשתמש של נעם. ההעברות בשניהם מחייבות הכנסת קוד אימות ממרקוד.</p>
+                </section>
+
+                <section id="cashflow">
+                    <h2>פרק ח’: עדכון תזרים (אזור ה-15 לחודש)</h2>
+                    <p>נדרשת תשומת לב מיוחדת לעדכון גיליון התזרים. אי-רישום בו ייצור כדור שלג שיתנקם בנו בהמשך.</p>
+                    
+                    <h3>הוצאות</h3>
+                    <p>בחשבון הבנק, מסננים את הוצאות החודש שעבר ומזינים אותן לתזרים, כולל חיובי אשראי. יש לוודא שהוגשו חשבוניות עבור כל הסכום שירד מכרטיס האשראי. בנוסף, בשורת ההוצאות של המשכורות (מזכירות, חזקי, איילה) יש לבקש מרחל טל (רואת החשבון) את עלות המעביד המלאה של השכר ששולם.</p>
+                    
+                    <h3>הכנסות</h3>
+                    <p>ברישום ההכנסות בתזרים, נשתדל לבצע הפרדה ככל שניתן בין הכנסות של חזקי לבין הכנסות מהמרכז. נעשה זאת על ידי כניסה לסאמיט, סינון התאריכים לחודש החולף, וסינון נוסף לפי סוג מסמך “קבלה”. את התוצאה נייצא לאקסל. לאחר מכן:</p>
+                    <ol>
+                        <li>מסמנים בצבע את ההכנסות של הפגישות האישיות של חזקי ומזינים את סכומן בשורת “הכנסות חזקי” בתזרים.</li>
+                        <li>מזינים את יתר ההכנסות, ללא סימון, בשורת “הכנסות מרכז”.</li>
+                        <li>מוודאים שסכום ההכנסות המסומן באפור בתזרים זהה לחלוטין לסכום המוצג בדוחות סאמיט לאותו חודש.</li>
+                    </ol>
+                </section>
+
+                <section id="patient">
+                    <h2>פרק ט’: קליטת מטופל חדש</h2>
+                    <p>למעט מקרים חריגים שבהם תהיה הוראה נפרדת — קליטת מטופל חדש תהיה כרוכה בדרך כלל בפגישה ראשונית עם חזקי, ובשלב הבא בחיבור למטפל במרכז.</p>
+                    <ul>
+                        <li>העלות לפגישה עם חזקי — 550 ש”ח.</li>
+                        <li>העלות לפגישות סדירות בהמשך עם מטפל — 400 ש”ח.</li>
+                    </ul>
+                    <div class="important">
+                        <div class="box-title"><i class="fa-solid fa-triangle-exclamation"></i> חשוב:</div>
+                        <p>קיימים מטופלים שהעלות לפגישה עבורם היא 350 ש”ח. מדובר במטופלים שהחלו תהליך לפני עליית המחירים.</p>
+                    </div>
+
+                    <h3>חיבור מטופל למטפל</h3>
+                    <p>לרוב חזקי מבצע את החיבור בעצמו, דרך קבוצת הוואטסאפ המשותפת לעדכונים. כשנדרש חיבור על ידי המזכירות, זה סדר הפעולות הנדרש:</p>
+                    <ol>
+                        <li>טלפון למטופל או להוריו למסירת פרטי המטפל ומספרו, תוך הדגשה שהרקע יינתן למטפל על ידי חזקי.</li>
+                        <li>שליחת הודעה עם פרטי המטופל וההפניה בקבוצת העדכונים, תוך הדגשת הצורך בקבלת רקע מקדים על ידי חזקי לאחר קביעת הפגישה הראשונית (תעדכן כשייקבע פגישה, ותשים לב לקבל רקע מקדים מחזקי).</li>
+                    </ol>
+
+                    <h3>פתיחת תיק בטיפולוג</h3>
+                    <p>פתיחת תיק מתבצעת רק לאחר שהפגישה הראשונה נערכה בפועל, ולא בשלב ההפניה.</p>
+                    
+                    <div class="why-box">
+                        <div class="box-title"><i class="fa-solid fa-circle-question"></i> למה?</div>
+                        <p>לא מעט כאלו שהופנו, לא פנו. פתיחת כרטסת בטיפולוג לאחר פגישה ראשונה עם המטפל חוסכת הרבה כאב ראש מיותר של רישום שאינו נצרך.</p>
+                    </div>
+
+                    <p><strong>אופן הפתיחה:</strong> הוספת חדש -> הזנת שם פרטי, שם משפחה וטלפון לגבייה -> בחירת המטפל בהרשאות. חובה להזין 400 (או 350 לפי המקרה) בשורה “מחיר לגבייה מגורם מממן”.</p>
+                    
+                    <div class="important">
+                        <div class="box-title"><i class="fa-solid fa-triangle-exclamation"></i> חשוב:</div>
+                        <p>ללא הזנה זו, חובות המטופל לא יופיעו בדוחות.</p>
+                    </div>
+                </section>
+
+                <section id="therapist">
+                    <h2>פרק י’: קליטת מטפל חדש</h2>
+                    
+                    <h3>נהלים</h3>
+                    
+                    <h4>פתיחת משתמש בטיפולוג</h4>
+                    <p>כניסה למערכת, הוספת חדש, הוספת עובד. יש להזין: שם משתמש, מגדר, שם פרטי, שם משפחה, תעודת זהות ומייל. בתחתית יש לבחור תפקיד “מטפל” ולשמור. המטפל יקבל מייל אוטומטי עם שם המשתמש שלו ויגדיר לעצמו סיסמה.</p>
+                    
+                    <h4>תיוק מסמכים</h4>
+                    <p>יש לוודא חתימה על חוזה ההעסקה וקבלת תעודות ההסמכה של המטפל. את המסמכים צריך לתייק בתיקייה הייעודית ב-Google Drive.</p>
+                    
+                    <h4>פתיחת ערוץ תקשורת</h4>
+                    <p>פותחים קבוצת וואטסאפ ייעודית הכוללת את חזקי, את המטפל ואת המזכירות (עדכוני פגישות — שם המטפל).</p>
+                    <p>חשוב לוודא שהמטפל מקבל את הקישור למפת החדרים, ושהוא משריין לעצמו זמנים נוחים לקבלת מטופלים על פי פניות במרכז. בנוסף, חשוב לוודא שהוא מקבל את הקובץ “נהלים והתנהלות שוטפת” מהדרייב (בקרוב — יומר לקישור שבו יופיעו כלל הנהלים והדגשים). בנוסף, בתיאור הקבוצה נציב קישור למפת החדרים, לשימוש עתידי.</p>
+                    
+                    <h4>הדרכת המטפל לשימוש במערכת</h4>
+                    <p>יש לתת למטפל הנכנס הסבר על השימוש במערכת: הוספת מפגש, עדכון מפגש רגיל, עדכון ביטול בתשלום.</p>
+                    <p>חשוב להדגיש: אם מטופל שילם לו מזומן ישירות בקליניקה, אסור למטפל לסמן זאת כמשולם בטיפולוג. עליו לעדכן את המזכירות, והיא בלבד מזינה את התשלום במערכת. בנוסף, עלינו להנחות את המטפל שבתשלום מזומן עליו להפקיד את המזומן בכספת הייעודית במעטפה שנועדה לכך, תוך רישום הפרטים הנדרשים, כפי שמפורט בקובץ הנהלים.</p>
+                </section>
+
+                <section id="rooms">
+                    <h2>פרק יא’: ניהול מפת החדרים</h2>
+                    <p>תפוסת החדרים מנוהלת בקובץ אקסל שיתופי, שעריכתו אפשרית רק על ידי המזכירות. הקובץ נקרא “מפת חדרים”, והוא מופיע בסרגל הסימניות. מפת החדרים ממפה את כלל החדרים במרכז, ולכל מטפל משוריינות שעות קבועות בחדרים ספציפיים.</p>
+                    <ul>
+                        <li>שמירה קבועה של חדר פירושה הזנת שם המטפל בצבע המוגדר לו, בחדר המשוריין לו.</li>
+                        <li>שמירה חד-פעמית תתבצע על ידי הזנת שמו עם תאריך ספציפי ומחיקתו מיד בתום השימוש.</li>
+                    </ul>
+                    <p>בנוסף למפת החדרים קיימת קליניקה בבית שמש שאינה מופיעה במפת החדרים. בקליניקה בבית שמש משתמשים מטפלים ספציפיים בשעות מסוימות, וכל שינוי בשעות האלו דורש עדכון ואישור של חזקי. את התפוסה בקליניקה, נדרש לאשר מול חזקי ולהוסיף רישום של התפוסה ביומן של חזקי בסימון בצבע אדום.</p>
+                </section>
+
+                <section id="miscellaneous">
+                    <h2>פרק יב’: שונות</h2>
+                    
+                    <h3>הפקת אישורים ומסמכים רשמיים</h3>
+                    <p>הורים מבקשים לעיתים אישורי פנייה לטיפול או אישורי קבלת טיפול לצורך החזרים מקופות חולים או לצורך התנהלות מול גורמי רווחה ומשפט. לבקשה כזו, יש לנסח את המכתב לפי הפורמט השמור במחשב, להציב אותו על דף לוגו רשמי של מרכז נשרים, לייצא לקובץ PDF ולהעביר לחזקי לחתימה. על פי הצורך, יש לשלוח להורים גם את תעודות ההסמכה של המטפלים או את פוליסת הביטוח של המרכז. לכל שאלה בנוגע לקיומם של מסמכים או תעודות מסוימות, יש לבדוק מול חזקי.</p>
+                    
+                    <h3>מימון חיצוני והתנהלות מול קופת חולים</h3>
+                    <p>המרכז אינו מתנהל מול קופות החולים ישירות ואין ביכולתנו לגבות מהן תשלום. במקרים מסוימים קיים החזר לפי גיל ובהתאם לביטוח המשלים של כל קופה, אך ההתנהלות לקבלתו והאחריות לבירור קיומו הן על ההורים בלבד. על ההורים לברר מראש, בטרם תחילת הטיפול, מהם הקריטריונים של קופתם ואילו מסמכים נדרשים, ולוודא את קיומם מולנו לפני הכניסה לטיפול. ההחזר מהקופה יתבצע מול המשפחה ועל בסיס קבלה ששולמה, ולמרכז לא תהיה שום יכולת גבייה מול גורמים אלו ישירות.</p>
+                    
+                    <h3>טבלת משימות לביצוע</h3>
+                    <p>יש לעבור באופן שוטף על לשונית “משימות לביצוע” בקובץ נשרים 2026 ולבצע את המשימות המתעדכנות בה. משימה שסוכם עם חזקי שיטפל בה בהמשך תירשם בגיליון הייעודי באקסל ולא תימחק עד לביצועה. כדאי להזכיר מפעם לפעם משימות שרשומות בה, ולוודא שהן בטיפול בהתאם לצורך.</p>
+
+                    <h3>נהלים ודגשים למטפלים</h3>
+                    <p>מומלץ לעיין בקובץ “נהלים ודגשים למטפל” כדי להכיר את תהליכי העבודה מנקודת מבטם של המטפלים. הכרת הנהלים מנקודת מבט זו תסייע בהבנת שאלות ומצבים שעולים בשגרת העבודה השוטפת.</p>
+
+                    <h3>קביעת פגישה והכוונה לכתובת</h3>
+                    <p>אם נקבעת פגישה ראשונית, יש לוודא מתן כתובת. במקרים רבים הפגישה בפועל תתקיים לא בשעות המענה של המשרד, ומטופל עשוי לגלות אחר הצהריים שאינו יודע לאן עליו להגיע.</p>
+                    <p>במתן הכתובת, יש לוודא שהמטופל מודע לכך שרחוב יפו נמצא בירושלים (כן, היו כמה שהגיעו ליפו בתל אביב). בקביעת פגישה בבית שמש, יש לוודא שהמטופל מודע לכך שהפגישה בבית שמש. למטופל שהיה בעבר אצל חזקי, יש לוודא גם את העובדה שהפגישה שנקבעה היא לירושלים.</p>
+                </section>
+
+                <section id="appendix">
+                    <h2>נספח: פרטי המרכז</h2>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>פרט</th>
+                                <th>נתונים</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>מספר טלפון עמותה</td>
+                                <td>
+                                    <div class="table-code-container">
+                                        <span class="code" id="code-phone-center">0537661500</span>
+                                        <button class="copy-btn" onclick="copyCode('code-phone-center')"><i class="fa-regular fa-copy"></i> העתק</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>טלפון חזקי</td>
+                                <td>
+                                    <div class="table-code-container">
+                                        <span class="code" id="code-phone-chizki">0544500078</span>
+                                        <button class="copy-btn" onclick="copyCode('code-phone-chizki')"><i class="fa-regular fa-copy"></i> העתק</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>מספר זהות חזקי</td>
+                                <td>
+                                    <div class="table-code-container">
+                                        <span class="code" id="code-id-chizki">201043734</span>
+                                        <button class="copy-btn" onclick="copyCode('code-id-chizki')"><i class="fa-regular fa-copy"></i> העתק</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>תאריך לידה חזקי</td>
+                                <td>
+                                    <div class="table-code-container">
+                                        <span class="code" id="code-birth-chizki">06/10/1989</span>
+                                        <button class="copy-btn" onclick="copyCode('code-birth-chizki')"><i class="fa-regular fa-copy"></i> העתק</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>פרטי בנק מרכנתיל</td>
+                                <td>
+                                    <div class="table-code-container">
+                                        <span class="code" id="code-bank">בנק 17, סניף 635, חשבון 105051189</span>
+                                        <button class="copy-btn" onclick="copyCode('code-bank')"><i class="fa-regular fa-copy"></i> העתק</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4 style="margin-top: 24px;">הוראות הגעה מפורטות</h4>
+                    <p><strong>מרכז נשרים, ירושלים:</strong> רחוב יפו 206, קומה 4 (במעלית). הכניסה דרך הדלת השקופה שבין בנק לאומי לקפה שמש; יש שומר בכניסה. לבאים מכיוון שרי ישראל: פנייה שמאלה לרחוב יפו, כשתי דקות הליכה. לבאים מהתחנה המרכזית: חציית צומת שרי ישראל-יפו לכיוון מחנה יהודה, כארבע דקות הליכה. תחבורה ציבורית: רכבת קלה עד המקום; אוטובוסים: ירידה בתחנה המרכזית או ביפו פינת שרי ישראל.</p>
+                    
+                    <p><strong>קליניקה — חזקי, בית שמש:</strong> רחוב מלאכי הנביא 4, כניסה ב’. יש ללכת לצד ימין של הבית, לעבור את השער הצר, לרדת במדרגות עד הסוף ולפנות שמאלה עד הסוף.</p>
+                </section>
+
+                <footer>
+                    <div class="footer-logo">
+                        <svg width="352" height="74" viewBox="0 0 352 74" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M45.087 4.31191V41.0857H3.9121V10.5713H0V0.791016H41.6639C43.8156 0.791016 45.087 2.16025 45.087 4.31191ZM32.5683 10.5713H16.4308V31.3054H32.6661V10.5713H32.5683ZM57.9969 10.5713H50.6617V0.791016H70.4179V25.6329H57.9969V10.5713ZM97.5092 16.635C97.5092 12.1361 95.7487 10.5713 91.8366 10.5713H75.9926V0.791016H98.4872C105.92 0.791016 110.028 4.1163 110.028 12.3317V41.1835H97.5092V16.635ZM174.48 0.791016V26.9043C174.48 37.3692 170.666 41.1835 159.516 41.1835H131.544C120.493 41.1835 116.581 37.3692 116.581 26.9043V0.791016H133.99V10.5713H128.708V25.9263C128.708 29.7406 130.371 31.3054 134.381 31.3054H139.466V0.791016H151.398V31.3054H156.582C160.592 31.3054 162.254 29.7406 162.254 25.9263V10.5713H156.973V0.791016H174.48ZM179.077 31.3054H188.074V10.6691H180.641V0.791016H200.593V37.7604C200.593 39.912 199.419 41.0857 197.268 41.0857H179.077V31.3054Z" fill="#0A1C2F"/>
+                            <path d="M1.88867 66.7372H5.70758V70.9141H1.88867V66.7372ZM24.9214 60.1734V70.9141H21.4606V61.1282C21.4606 59.4574 20.7445 58.7413 19.1931 58.7413H14.1808V70.9141H8.21373V68.1693H10.8392V58.7413H8.81044V55.9965H20.6252C23.4893 55.8772 24.9214 57.1899 24.9214 60.1734ZM35.6621 61.3668C35.6621 59.4574 34.9461 58.7413 33.156 58.7413H26.8309V55.9965H34.9461C37.8102 55.9965 39.2423 57.3092 39.2423 60.2928V70.9141H35.7814V61.3668H35.6621ZM58.9336 58.7413H57.2628V70.9141H53.8019V58.7413H46.4028V70.9141H42.9419V58.7413H41.3905V55.9965H57.9788C58.5755 55.9965 58.9336 56.3545 58.9336 56.9512V58.7413ZM74.2092 64.589C74.9252 65.7824 75.6413 66.9759 76.1186 68.0499H78.5054V70.7948H73.7318C72.5384 67.0952 69.6742 63.515 66.9294 60.5315L66.094 70.7948H60.9623V68.0499H62.8718L63.8265 58.622H61.0817V55.8772H66.5714C68.1228 57.1899 70.0322 59.0994 71.703 61.1282L73.4931 55.8772H77.5507C78.1474 55.8772 78.5054 56.2352 78.5054 56.8319V58.622H76.3573L74.2092 64.589ZM88.7687 70.9141H87.2173V66.7372H91.0362V70.1981C91.0362 71.8688 90.6782 73.0622 90.4395 73.8976H88.4107C88.6494 72.9429 88.7687 71.7495 88.7687 70.9141ZM108.937 56.9512V70.9141H94.0197V58.7413H92.4683V55.9965H107.744C108.46 55.8772 108.937 56.3545 108.937 56.9512ZM105.357 58.7413H97.4806V68.1693H105.357V58.7413ZM114.427 58.7413H111.324V55.9965H117.888V65.0664H114.427V58.7413ZM129.225 61.3668C129.225 59.4574 128.509 58.7413 126.719 58.7413H120.394V55.9965H128.39C131.254 55.9965 132.686 57.3092 132.686 60.2928V70.9141H129.225V61.3668ZM146.53 70.9141H143.188C143.188 68.1693 142.591 66.9759 141.875 66.2598L139.011 70.9141H134.834V68.1693H136.863L139.847 63.3956V58.7413H136.386V55.9965H143.188V63.1569C144.978 63.9923 146.41 66.0211 146.53 70.9141ZM162.879 68.1693V70.9141H148.2V68.1693H157.39V58.7413H148.2V55.9965H160.851V68.1693H162.879ZM181.138 60.1734V70.9141H177.678V61.1282C177.678 59.4574 176.962 58.7413 175.41 58.7413H170.398V70.9141H164.431V68.1693H167.056V58.7413H165.027V55.9965H176.842C179.826 55.8772 181.138 57.1899 181.138 60.1734ZM200.591 61.2475V70.9141H192.118V68.1693H197.13V61.9635C197.13 59.4574 195.937 58.622 194.266 58.622C192.595 58.622 190.686 59.338 188.896 60.8895V71.0334H185.435V58.7413H183.406V55.9965H188.776V57.906C191.044 56.4739 193.073 55.7578 195.34 55.7578C198.204 55.6385 200.591 57.1899 200.591 61.2475Z" fill="#0A1C2F"/>
+                            <path d="M280.83 58.1569C280.83 58.1569 284.623 45.9213 292.643 43.3874C300.662 40.8535 325.955 34.9412 338.179 21.8838C350.403 8.80352 347.455 3.73578 351.659 0.791017C351.659 0.791017 298.537 10.9037 290.952 22.7284C283.366 34.5303 280.83 37.0641 280.83 37.0641L280.83 58.1569Z" fill="#79DEB6"/>
+                            <circle cx="280.683" cy="38.6031" r="33.7566" fill="none" stroke="#0A1C2F" stroke-width="2.43807"/>
+                            <path d="M280.829 58.1569C280.829 58.1569 277.041 45.9213 269.032 43.3874C261.023 40.8535 235.717 34.9412 223.486 21.8838C211.255 8.80352 214.221 3.73578 210 0.791016C210 0.791016 263.122 10.9037 270.721 22.7284C278.319 34.5303 280.829 37.0641 280.829 37.0641L280.829 58.1569Z" fill="#79DEB6"/>
+                        </svg>
+                    </div>
+                    <p><strong>חלה חובת סודיות על מסמך זה.</strong><br>אין להעביר או להעתיק.</p>
+                </footer>
+            </main>
+        </div>
+    </div>
+
+    <a href="#" class="back-to-top" id="backToTop" title="חזרה למעלה"><i class="fa-solid fa-arrow-up"></i></a>
+    <div class="toast" id="toast"><i class="fa-solid fa-circle-check" style="color: var(--accent);"></i> הנתון הועתק בהצלחה!</div>
+
+    <script>
+        const backToTopBtn = document.getElementById('backToTop');
+        const sidebar = document.getElementById('sidebar');
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const sections = document.querySelectorAll('section');
+        const sidebarItems = document.querySelectorAll('aside nav ul li');
+        const mobileNavLinks = document.querySelectorAll('.mobile-sub-nav a');
+        const mobileSubNav = document.getElementById('mobileSubNav');
+        const toast = document.getElementById('toast');
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('open');
+            sidebarOverlay.classList.toggle('show');
+            const icon = menuToggle.querySelector('i');
+            if(sidebar.classList.contains('open')) {
+                icon.className = 'fa-solid fa-xmark';
+            } else {
+                icon.className = 'fa-solid fa-bars';
+            }
+        }
+
+        menuToggle.addEventListener('click', toggleSidebar);
+        sidebarOverlay.addEventListener('click', toggleSidebar);
+
+        document.querySelectorAll('nav a, .mobile-sub-nav a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href');
+                const targetSection = document.querySelector(targetId);
+                
+                if(targetSection) {
+                    if(sidebar.classList.contains('open')) toggleSidebar();
+                    
+                    const offset = window.innerWidth <= 1150 ? 125 : 50;
+                    const targetPosition = targetSection.getBoundingClientRect().top + window.pageYOffset - offset;
+                    
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 400) {
+                backToTopBtn.classList.add('show');
+            } else {
+                backToTopBtn.classList.remove('show');
+            }
+
+            let currentSectionId = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const offset = window.innerWidth <= 1150 ? 140 : 180;
+                if (window.pageYOffset >= (sectionTop - offset)) {
+                    currentSectionId = section.getAttribute('id');
+                }
+            });
+
+            if(currentSectionId) {
+                sidebarItems.forEach(li => {
+                    li.classList.remove('active');
+                    if (li.querySelector('a').getAttribute('href') === `#${currentSectionId}`) {
+                        li.classList.add('active');
+                    }
+                });
+
+                mobileNavLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${currentSectionId}`) {
+                        link.classList.add('active');
+                        
+                        const navLeft = mobileSubNav.offsetLeft;
+                        const linkLeft = link.offsetLeft;
+                        const linkWidth = link.clientWidth;
+                        const navWidth = mobileSubNav.clientWidth;
+                        
+                        mobileSubNav.scrollTo({
+                            left: linkLeft - (navWidth / 2) + (linkWidth / 2) - navLeft,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            }
+        });
+
+        backToTopBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        function copyCode(elementId) {
+            const codeText = document.getElementById(elementId).innerText;
+            navigator.clipboard.writeText(codeText).then(() => {
+                toast.classList.add('show');
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 2200);
+            }).catch(err => {
+                console.error('שגיאה בהעתקה: ', err);
+            });
+        }
+    </script>
+</body>
+</html>
